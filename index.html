@@ -360,8 +360,8 @@
     </style>
 </head>
 <body>
-    <!-- Admin Panel Button -->
-    <div class="admin-panel">
+    <!-- Admin Panel Button (Hidden by default) -->
+    <div class="admin-panel" id="adminPanelBtn" style="display: none;">
         <button onclick="showAdminPanel()" class="btn" style="background: none; border: none; color: white;">
             🛠️ پانێڵی بەڕێوەبردن
         </button>
@@ -654,8 +654,41 @@
             }
         ];
 
-        let cart = [];
-        let currentEditId = null;
+        // Admin mode toggle - for site owner only
+        let adminMode = false;
+        
+        // Secret admin access (Triple click on logo)
+        let clickCount = 0;
+        
+        // Add click listener to logo for admin access
+        document.addEventListener('DOMContentLoaded', function() {
+            const logo = document.querySelector('.logo');
+            logo.addEventListener('click', function() {
+                clickCount++;
+                if (clickCount === 3) {
+                    toggleAdminMode();
+                    clickCount = 0;
+                }
+                // Reset counter after 2 seconds
+                setTimeout(() => { clickCount = 0; }, 2000);
+            });
+        });
+
+        // Toggle admin mode
+        function toggleAdminMode() {
+            adminMode = !adminMode;
+            const adminBtn = document.getElementById('adminPanelBtn');
+            
+            if (adminMode) {
+                adminBtn.style.display = 'block';
+                alert('📋 دەستەڵاتی بەڕێوەبردن چالاک کرا!');
+                displayProducts(products); // Refresh to show edit buttons
+            } else {
+                adminBtn.style.display = 'none';
+                alert('🔒 دەستەڵاتی بەڕێوەبردن ناچالاک کرا!');
+                displayProducts(products); // Refresh to hide edit buttons
+            }
+        }
 
         // Initialize the page
         function init() {
@@ -679,7 +712,7 @@
                         <div class="product-price">${product.price.toLocaleString()} دینار</div>
                         <div style="margin-top: 1rem;">
                             <button class="btn btn-primary" onclick="addToCart(${product.id})">زیادکردن بۆ سەبەتە</button>
-                            <button class="btn" style="background: #ffc107; color: #333; margin-right: 0.5rem;" onclick="editProduct(${product.id})">دەستکاری</button>
+                            ${adminMode ? `<button class="btn" style="background: #ffc107; color: #333; margin-right: 0.5rem;" onclick="editProduct(${product.id})">دەستکاری</button>` : ''}
                         </div>
                     </div>
                 `;
@@ -830,7 +863,8 @@
                 if (productIndex > -1) {
                     if (confirm('دڵنیایت لە سڕینەوەی ئەم بەرهەمە؟')) {
                         products.splice(productIndex, 1);
-                        displayProducts(products);
+        let cart = [];
+        let currentEditId = null;
                         alert('بەرهەمەکە سڕایەوە!');
                     }
                 } else {
