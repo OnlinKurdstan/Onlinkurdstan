@@ -473,9 +473,12 @@
                 </div>
                 <div class="footer-section">
                     <h3>پەیوەندی</h3>
-                    <a href="#">تەلەفۆن: ٠٧٥٠ ١٢٣ ٤٥٦٧</a>
-                    <a href="#">ئیمەیڵ: info@onlinekurdistan.com</a>
-                    <a href="#">ناونیشان: هەولێر، کوردستان</a>
+                    <a href="tel:+9647501234567">📞 تەلەفۆن: ٠٧٥٠ ١٢٣ ٤٥٦٧</a>
+                    <a href="https://wa.me/9647501234567">💬 واتساپ: ٠٧٥٠ ١٢٣ ٤٥٦٧</a>
+                    <a href="mailto:info@onlinekurdistan.com">📧 ئیمەیڵ: info@onlinekurdistan.com</a>
+                    <a href="#">📍 ناونیشان: هەولێر، کوردستان</a>
+                    <a href="https://facebook.com/onlinekurdistan">📘 فەیسبووک</a>
+                    <a href="https://instagram.com/onlinekurdistan">📷 ئینستاگرام</a>
                 </div>
             </div>
         </div>
@@ -579,7 +582,86 @@
         </div>
     </div>
 
-    <!-- Cart Modal -->
+    <!-- Checkout Details Modal -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('checkoutModal')">&times;</span>
+            <h2>🛒 تەواوکردنی کڕین</h2>
+            <form id="checkoutForm">
+                <div class="form-group">
+                    <label>ناوی تەواو *</label>
+                    <input type="text" id="customerName" required placeholder="ناوی تەواوت بنووسە">
+                </div>
+                <div class="form-group">
+                    <label>ژمارەی مۆبایل *</label>
+                    <input type="tel" id="customerPhone" required placeholder="07501234567">
+                </div>
+                <div class="form-group">
+                    <label>پارێزگا *</label>
+                    <select id="customerProvince" required onchange="calculateDelivery()">
+                        <option value="">پارێزگا هەڵبژێرە</option>
+                        <option value="هەولێر">هەولێر</option>
+                        <option value="سلێمانی">سلێمانی</option>
+                        <option value="دهۆک">دهۆک</option>
+                        <option value="کەرکووک">کەرکووک</option>
+                        <option value="زاخۆ">زاخۆ</option>
+                        <option value="رانیە">رانیە</option>
+                        <option value="قەڵادزێ">قەڵادزێ</option>
+                        <option value="کۆیە">کۆیە</option>
+                        <option value="چەمچەماڵ">چەمچەماڵ</option>
+                        <option value="هەڵەبجە">هەڵەبجە</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ناونیشانی تەواو *</label>
+                    <textarea id="customerAddress" required placeholder="ناونیشانی ورد (گەڕەک، کۆڵان، ماڵ ژمارە)"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>تێبینی (ئیختیاری)</label>
+                    <textarea id="customerNote" placeholder="هەر تێبینییەک (کات، ڕێنمایی تایبەت...)"></textarea>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                    <h3>📋 پوختەی داواکاری:</h3>
+                    <div id="orderSummary"></div>
+                </div>
+
+                <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                    <h4>📦 زانیاری گەیاندن:</h4>
+                    <p><strong>شێوازی پارەدان:</strong> کاش لەسەر دەرگا (COD)</p>
+                    <p><strong>کاتی گەیاندن:</strong> 1-3 ڕۆژی کاری</p>
+                    <p id="deliveryInfo"><strong>تێچووی گەیاندن:</strong> دیارینەکراو</p>
+                    <p><strong>کۆی گشتی:</strong> <span id="finalTotal" style="color: #dc3545; font-size: 1.2rem; font-weight: bold;"></span></p>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">
+                    ✅ پەسندکردنی داواکاری
+                </button>
+            </form>
+        </div>
+    </div>
+    <div id="productDetailsModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close" onclick="closeModal('productDetailsModal')">&times;</span>
+            <div id="productDetailsContent">
+                <!-- Product details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Password Modal -->
+    <div id="adminPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('adminPasswordModal')">&times;</span>
+            <h2>تکایە پاسوۆردەکە داخڵ بکە</h2>
+            <form id="adminPasswordForm">
+                <div class="form-group">
+                    <input type="password" id="adminPassword" placeholder="پاسوۆردی بەڕێوەبەر" required>
+                </div>
+                <button type="submit" class="btn btn-primary">چوونەژوور</button>
+            </form>
+        </div>
+    </div>
     <div id="cartModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('cartModal')">&times;</span>
@@ -596,61 +678,97 @@
     </div>
 
     <script>
-        // Sample products data
+        // Sample products data with variants and details
         let products = [
             {
                 id: 1,
                 name: "مۆبایلی سامسۆنگ Galaxy S24",
                 description: "مۆبایلێکی زۆر باش بۆ هەموو کارەکان",
+                fullDescription: "مۆبایلێکی زۆر بەهێز بە پڕۆسێسۆری Snapdragon 8 Gen 3، کامێرای 200MP، بەتریی 5000mAh و نمایشکەری 6.8 ئینج",
                 price: 800000,
+                originalPrice: 900000,
+                discount: 11,
                 category: "electronics",
                 stock: 10,
-                icon: "📱"
+                icon: "📱",
+                colors: ["ڕەش", "سپی", "شین", "سۆر"],
+                sizes: ["128GB", "256GB", "512GB"],
+                images: ["📱", "📷", "🔋", "📺"]
             },
             {
                 id: 2,
                 name: "کۆمپیوتەری MacBook Pro",
                 description: "کۆمپیوتەرێکی بەهێز بۆ کارکردن",
+                fullDescription: "MacBook Pro 16-inch بە چیپی M3 Pro، 18GB RAM، 512GB SSD، نمایشکەری Liquid Retina XDR",
                 price: 2500000,
+                originalPrice: 2800000,
+                discount: 11,
                 category: "electronics",
                 stock: 5,
-                icon: "💻"
+                icon: "💻",
+                colors: ["گری سپەیس", "زیوەیی"],
+                sizes: ["512GB", "1TB", "2TB"],
+                images: ["💻", "⌨️", "🖱️", "🔌"]
             },
             {
                 id: 3,
                 name: "جلی کوردی",
                 description: "جلی نەتەوەیی کوردی جوان",
+                fullDescription: "جلی کوردی دەستکرد لە پارچەی خالیس، دوورافی جوان، گونجاو بۆ جەژنەکان و بۆنە نیشتمانیەکان",
                 price: 150000,
+                originalPrice: 180000,
+                discount: 17,
                 category: "clothing",
                 stock: 20,
-                icon: "👕"
+                icon: "👕",
+                colors: ["سۆر", "سەوز", "زەرد", "شین"],
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                images: ["👕", "🧵", "🎨", "👔"]
             },
             {
                 id: 4,
                 name: "کتێبی مێژووی کورد",
                 description: "کتێبێکی گرنگ دەربارەی مێژووی گەلی کورد",
+                fullDescription: "کتێبێکی تەواو دەربارەی مێژووی کورد لە سەردەمی کۆنەوە تا ئێستا، نووسینی د.کەمال مەزهەر",
                 price: 25000,
+                originalPrice: 30000,
+                discount: 17,
                 category: "books",
                 stock: 30,
-                icon: "📚"
+                icon: "📚",
+                colors: ["قاوەیی", "سپی"],
+                sizes: ["کتێبی ئاسایی", "کتێبی گەورە"],
+                images: ["📚", "📖", "✍️", "🎓"]
             },
             {
                 id: 5,
                 name: "تەلەفزیۆنی Smart TV",
                 description: "تەلەفزیۆنی ئامانج 55 ئینج",
+                fullDescription: "Smart TV Samsung 55 ئینج، 4K UHD، HDR10+، Tizen OS، WiFi، Bluetooth، 3 HDMI",
                 price: 600000,
+                originalPrice: 700000,
+                discount: 14,
                 category: "electronics",
                 stock: 8,
-                icon: "📺"
+                icon: "📺",
+                colors: ["ڕەش", "گری"],
+                sizes: ["43 ئینج", "55 ئینج", "65 ئینج"],
+                images: ["📺", "📡", "🔊", "📱"]
             },
             {
                 id: 6,
                 name: "کورسی ئۆفیس",
                 description: "کورسی ئاسوودە بۆ کارکردن",
+                fullDescription: "کورسی ئۆفیس بە پشتگیری کەمەرەوە، قابیلی ڕێکخستن، چەرخان، مەواد بەرزە کوالیتی",
                 price: 200000,
+                originalPrice: 250000,
+                discount: 20,
                 category: "home",
                 stock: 15,
-                icon: "🪑"
+                icon: "🪑",
+                colors: ["ڕەش", "قاوەیی", "گری"],
+                sizes: ["قەبارەی ناوەند", "قەبارەی گەورە"],
+                images: ["🪑", "⚙️", "🔧", "🛠️"]
             }
         ];
 
@@ -674,20 +792,134 @@
             });
         });
 
-        // Toggle admin mode
+        // Toggle admin mode with password
         function toggleAdminMode() {
-            adminMode = !adminMode;
-            const adminBtn = document.getElementById('adminPanelBtn');
-            
-            if (adminMode) {
-                adminBtn.style.display = 'block';
-                alert('📋 دەستەڵاتی بەڕێوەبردن چالاک کرا!');
-                displayProducts(products); // Refresh to show edit buttons
+            if (!adminMode) {
+                document.getElementById('adminPasswordModal').style.display = 'block';
             } else {
+                adminMode = false;
+                const adminBtn = document.getElementById('adminPanelBtn');
                 adminBtn.style.display = 'none';
                 alert('🔒 دەستەڵاتی بەڕێوەبردن ناچالاک کرا!');
-                displayProducts(products); // Refresh to hide edit buttons
+                displayProducts(products);
             }
+        }
+
+        // Handle admin password
+        document.getElementById('adminPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+            
+            if (password === 'admin123') {
+                adminMode = true;
+                const adminBtn = document.getElementById('adminPanelBtn');
+                adminBtn.style.display = 'block';
+                alert('📋 دەستەڵاتی بەڕێوەبردن چالاک کرا!');
+                displayProducts(products);
+                closeModal('adminPasswordModal');
+                document.getElementById('adminPassword').value = '';
+            } else {
+                alert('❌ پاسوۆردەکە هەڵەیە!');
+            }
+        });
+        window.showProductDetails = function(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const detailsContent = document.getElementById('productDetailsContent');
+            detailsContent.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+                    <div>
+                        <div style="font-size: 8rem; text-align: center; margin-bottom: 1rem;">${product.icon}</div>
+                        <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem;">
+                            ${product.images.map(img => `<span style="font-size: 2rem; cursor: pointer;" onclick="changeMainImage('${img}')">${img}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div>
+                        <h2>${product.name}</h2>
+                        <p style="color: #666; margin: 1rem 0;">${product.fullDescription}</p>
+                        
+                        ${product.discount ? `
+                            <div style="background: #28a745; color: white; padding: 0.5rem; border-radius: 5px; margin: 1rem 0; text-align: center;">
+                                🎉 داشکاندنی تایبەت ${product.discount}% 🎉
+                            </div>
+                        ` : ''}
+                        
+                        <div style="margin: 1rem 0;">
+                            ${product.originalPrice ? `<div style="color: #999; text-decoration: line-through;">نرخی یەکەم: ${product.originalPrice.toLocaleString()} دینار</div>` : ''}
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #dc3545;">نرخی ئێستا: ${product.price.toLocaleString()} دینار</div>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">ڕەنگ:</label>
+                            <select id="selectedColor" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px;">
+                                ${product.colors.map(color => `<option value="${color}">${color}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">قەبارە:</label>
+                            <select id="selectedSize" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px;">
+                                ${product.sizes.map(size => `<option value="${size}">${size}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">دانە:</label>
+                            <input type="number" id="selectedQuantity" min="1" max="${product.stock}" value="1" style="width: 100px; padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px;">
+                            <span style="margin-right: 1rem; color: #28a745;">بەردەست: ${product.stock}</span>
+                        </div>
+
+                        <div style="margin: 2rem 0;">
+                            <button class="btn btn-primary" onclick="addToCartWithDetails(${product.id})" style="width: 100%; padding: 1rem; font-size: 1.2rem;">
+                                🛒 زیادکردن بۆ سەبەتە
+                            </button>
+                        </div>
+
+                        <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                            <h4>زانیاری گەیاندن:</h4>
+                            <p>📦 گەیاندن بۆ هەموو کوردستان</p>
+                            <p>🚚 گەیاندنی خێرا لە ماوەی 1-3 ڕۆژ</p>
+                            <p>💰 تێچووی گەیاندن: 5000-10000 دینار</p>
+                            <p>🔄 مافی گەڕاندنەوە لە ماوەی 14 ڕۆژ</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('productDetailsModal').style.display = 'block';
+        }
+
+        // Add to cart with selected options
+        window.addToCartWithDetails = function(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const color = document.getElementById('selectedColor').value;
+            const size = document.getElementById('selectedSize').value;
+            const quantity = parseInt(document.getElementById('selectedQuantity').value);
+
+            if (quantity > product.stock) {
+                alert('ببوورە، ئەو دانەیەی داواکرد لە کۆگا نییە!');
+                return;
+            }
+
+            const cartItem = {
+                ...product,
+                selectedColor: color,
+                selectedSize: size,
+                quantity: quantity,
+                cartId: Date.now() // Unique ID for cart item
+            };
+
+            cart.push(cartItem);
+            product.stock -= quantity;
+            
+            updateCartCount();
+            displayProducts(products);
+            closeModal('productDetailsModal');
+            
+            alert(`${quantity} دانە لە ${product.name} (${color}, ${size}) زیادکرا بۆ سەبەتە!`);
         }
 
         // Initialize the page
@@ -705,13 +937,15 @@
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
                 productCard.innerHTML = `
-                    <div class="product-image">${product.icon}</div>
+                    <div class="product-image" onclick="showProductDetails(${product.id})" style="cursor: pointer;">${product.icon}</div>
                     <div class="product-info">
-                        <div class="product-title">${product.name}</div>
+                        <div class="product-title" onclick="showProductDetails(${product.id})" style="cursor: pointer;">${product.name}</div>
                         <p>${product.description}</p>
+                        ${product.discount ? `<div style="color: #28a745; font-size: 0.9rem; font-weight: bold;">داشکاندن ${product.discount}%</div>` : ''}
+                        ${product.originalPrice ? `<div style="color: #666; text-decoration: line-through; font-size: 0.9rem;">${product.originalPrice.toLocaleString()} دینار</div>` : ''}
                         <div class="product-price">${product.price.toLocaleString()} دینار</div>
                         <div style="margin-top: 1rem;">
-                            <button class="btn btn-primary" onclick="addToCart(${product.id})">زیادکردن بۆ سەبەتە</button>
+                            <button class="btn btn-primary" onclick="showProductDetails(${product.id})">بینین و کڕین</button>
                             ${adminMode ? `<button class="btn" style="background: #ffc107; color: #333; margin-right: 0.5rem;" onclick="editProduct(${product.id})">دەستکاری</button>` : ''}
                         </div>
                     </div>
@@ -765,7 +999,7 @@
             document.getElementById('cartCount').textContent = count;
         }
 
-        // Show cart
+        // Show cart with enhanced details
         window.showCart = function() {
             const cartItems = document.getElementById('cartItems');
             const cartTotal = document.getElementById('cartTotal');
@@ -774,52 +1008,296 @@
             let total = 0;
 
             if (cart.length === 0) {
-                cartItems.innerHTML = '<p style="text-align: center;">سەبەتەکەت بەتاڵە</p>';
+                cartItems.innerHTML = '<p style="text-align: center; padding: 2rem;">سەبەتەکەت بەتاڵە<br>🛒 کاڵا زیاد بکە!</p>';
             } else {
                 cart.forEach(item => {
                     total += item.price * item.quantity;
                     const cartItem = document.createElement('div');
-                    cartItem.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #eee;';
+                    cartItem.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #eee; background: #f8f9fa; margin-bottom: 0.5rem; border-radius: 5px;';
                     cartItem.innerHTML = `
-                        <div>
-                            <strong>${item.name}</strong><br>
-                            ${item.price.toLocaleString()} دینار × ${item.quantity}
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="font-size: 2rem;">${item.icon}</span>
+                                <div>
+                                    <strong>${item.name}</strong><br>
+                                    <small style="color: #666;">
+                                        ڕەنگ: ${item.selectedColor || 'دیارینەکراو'} | 
+                                        قەبارە: ${item.selectedSize || 'دیارینەکراو'}
+                                    </small><br>
+                                    <span style="color: #dc3545; font-weight: bold;">
+                                        ${item.price.toLocaleString()} دینار × ${item.quantity} = 
+                                        ${(item.price * item.quantity).toLocaleString()} دینار
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                        <button class="btn" style="background: #dc3545; color: white;" onclick="removeFromCart(${item.id})">سڕینەوە</button>
+                        <button class="btn" style="background: #dc3545; color: white;" onclick="removeFromCart(${item.cartId})">سڕینەوە</button>
                     `;
                     cartItems.appendChild(cartItem);
                 });
+
+                // Add delivery info
+                const deliveryInfo = document.createElement('div');
+                deliveryInfo.style.cssText = 'background: #e3f2fd; padding: 1rem; border-radius: 5px; margin: 1rem 0;';
+                deliveryInfo.innerHTML = `
+                    <h4>گەیاندن و پارەدان:</h4>
+                    <p>🚚 تێچووی گەیاندن: 5000-10000 دینار</p>
+                    <p>💰 پارەدان: کاتی گەیشتن (COD)</p>
+                    <p>⏰ گەیشتن: 1-3 ڕۆژی کاری</p>
+                `;
+                cartItems.appendChild(deliveryInfo);
             }
 
             cartTotal.textContent = total.toLocaleString();
             document.getElementById('cartModal').style.display = 'block';
         }
 
-        // Remove from cart
-        window.removeFromCart = function(productId) {
-            const index = cart.findIndex(item => item.id === productId);
+        // Remove from cart - updated for cartId
+        window.removeFromCart = function(cartId) {
+            const index = cart.findIndex(item => item.cartId === cartId);
             if (index > -1) {
-                const product = products.find(p => p.id === productId);
-                product.stock += cart[index].quantity;
+                const item = cart[index];
+                const product = products.find(p => p.id === item.id);
+                product.stock += item.quantity;
                 cart.splice(index, 1);
                 updateCartCount();
                 displayProducts(products);
                 showCart(); // Refresh cart display
+                alert(`${item.name} لە سەبەتەکە سڕایەوە!`);
             }
         }
 
-        // Checkout
+        // Enhanced checkout with proper order details
         window.checkout = function() {
             if (cart.length === 0) {
                 alert('سەبەتەکەت بەتاڵە!');
                 return;
             }
             
-            alert('سپاس! داواکاریەکەت تۆمارکرا. بە زووترین کات پەیوەندیت پێوە دەکەین.');
+            // Show checkout modal instead of direct alert
+            showCheckoutModal();
+        }
+
+        // Show checkout modal with order summary
+        function showCheckoutModal() {
+            const orderSummary = document.getElementById('orderSummary');
+            const finalTotal = document.getElementById('finalTotal');
+            
+            let subtotal = 0;
+            let summaryHTML = '';
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                
+                summaryHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <div style="flex: 1;">
+                            <strong>${item.name}</strong><br>
+                            <small style="color: #666;">
+                                ${item.selectedColor || 'ڕەنگ دیارینەکراو'} | 
+                                ${item.selectedSize || 'قەبارە دیارینەکراو'} | 
+                                دانە: ${item.quantity}
+                            </small>
+                        </div>
+                        <div style="text-align: right; font-weight: bold;">
+                            ${itemTotal.toLocaleString()} دینار
+                        </div>
+                    </div>
+                `;
+            });
+            
+            summaryHTML += `
+                <div style="display: flex; justify-content: space-between; font-weight: bold; padding: 0.5rem 0; font-size: 1.1rem;">
+                    <span>کۆی بەرهەمەکان:</span>
+                    <span>${subtotal.toLocaleString()} دینار</span>
+                </div>
+            `;
+            
+            orderSummary.innerHTML = summaryHTML;
+            finalTotal.textContent = subtotal.toLocaleString() + ' دینار + تێچووی گەیاندن';
+            
+            document.getElementById('checkoutModal').style.display = 'block';
+        }
+
+        // Calculate delivery cost
+        window.calculateDelivery = function() {
+            const province = document.getElementById('customerProvince').value;
+            const deliveryInfo = document.getElementById('deliveryInfo');
+            const finalTotal = document.getElementById('finalTotal');
+            
+            let deliveryCost = 0;
+            const deliveryCosts = {
+                'هەولێر': 3000,
+                'سلێمانی': 5000,
+                'دهۆک': 4000,
+                'کەرکووک': 6000,
+                'زاخۆ': 7000,
+                'رانیە': 8000,
+                'قەڵادزێ': 6000,
+                'کۆیە': 7000,
+                'چەمچەماڵ': 6000,
+                'هەڵەبجە': 8000
+            };
+            
+            if (province && deliveryCosts[province]) {
+                deliveryCost = deliveryCosts[province];
+                deliveryInfo.innerHTML = `<strong>تێچووی گەیاندن:</strong> ${deliveryCost.toLocaleString()} دینار`;
+                
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const total = subtotal + deliveryCost;
+                finalTotal.innerHTML = `<span style="color: #dc3545; font-size: 1.2rem; font-weight: bold;">${total.toLocaleString()} دینار</span>`;
+            } else {
+                deliveryInfo.innerHTML = `<strong>تێچووی گەیاندن:</strong> دیارینەکراو`;
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                finalTotal.innerHTML = `<span style="color: #dc3545; font-size: 1.2rem; font-weight: bold;">${subtotal.toLocaleString()} دینار + تێچووی گەیاندن</span>`;
+            }
+        }
+
+        // Handle checkout form submission
+        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+            const province = document.getElementById('customerProvince').value;
+            const address = document.getElementById('customerAddress').value;
+            const note = document.getElementById('customerNote').value;
+            
+            // Validate Iraqi phone number
+            const iraqiPhonePattern = /^(0|\+964)(75|77|78|79|73)\d{8}$/;
+            if (!iraqiPhonePattern.test(phone)) {
+                alert('❌ تکایە ژمارەی مۆبایلی درووست داخڵ بکە\n(نموونە: 07501234567)');
+                return;
+            }
+            
+            // Calculate totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryCosts = {
+                'هەولێر': 3000, 'سلێمانی': 5000, 'دهۆک': 4000, 'کەرکووک': 6000,
+                'زاخۆ': 7000, 'رانیە': 8000, 'قەڵادزێ': 6000, 'کۆیە': 7000,
+                'چەمچەماڵ': 6000, 'هەڵەبجە': 8000
+            };
+            const deliveryCost = deliveryCosts[province] || 5000;
+            const total = subtotal + deliveryCost;
+            
+            // Create detailed order
+            const order = {
+                id: Date.now(),
+                items: [...cart],
+                customerInfo: { name, phone, province, address, note },
+                subtotal: subtotal,
+                deliveryCost: deliveryCost,
+                total: total,
+                status: 'چاوەڕوانی پەسندکردن',
+                paymentMethod: 'کاش لەسەر دەرگا (COD)',
+                date: new Date().toLocaleDateString('ku'),
+                time: new Date().toLocaleTimeString('ku'),
+                orderNumber: 'OK' + Date.now().toString().slice(-6)
+            };
+            
+            orders.push(order);
+            
+            // Show detailed confirmation
+            const itemsList = cart.map(item => 
+                `• ${item.name} (${item.selectedColor || 'ڕەنگ دیارینەکراو'}, ${item.selectedSize || 'قەبارە دیارینەکراو'}) × ${item.quantity}`
+            ).join('\n');
+            
+            alert(`🎉 سوپاس ${name}!
+داواکاریەکەت بە سەرکەوتووی تۆمارکرا
+
+📋 ژمارەی داواکاری: ${order.orderNumber}
+📱 تەلەفۆن: ${phone}
+📍 ناونیشان: ${province} - ${address}
+
+🛒 بەرهەمەکان:
+${itemsList}
+
+💰 حیسابەکە:
+• کۆی بەرهەمەکان: ${subtotal.toLocaleString()} دینار
+• تێچووی گەیاندن: ${deliveryCost.toLocaleString()} دینار
+• کۆی گشتی: ${total.toLocaleString()} دینار
+
+📦 پارەدان: کاش لەسەر دەرگا
+⏰ گەیاندن: 1-3 ڕۆژی کاری
+
+📞 زۆر بە زووی پەیوەندیت پێوە دەکەین!`);
+            
+            // Clear cart and close modal
             cart = [];
             updateCartCount();
-            closeModal('cartModal');
+            closeModal('checkoutModal');
             displayProducts(products);
+            
+            // Reset form
+            document.getElementById('checkoutForm').reset();
+        });
+
+        // Handle user registration with validation
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const phone = document.getElementById('registerPhone').value;
+            
+            // Validate Iraqi phone number
+            const iraqiPhonePattern = /^(\+964|0)(75|77|78|79|73)\d{8}$/;
+            if (!iraqiPhonePattern.test(phone)) {
+                alert('تکایە ژمارەی مۆبایلی عێراقی درووست داخڵ بکە (وەک: 07501234567)');
+                return;
+            }
+            
+            // Create user
+            const user = { name, email, phone, id: Date.now() };
+            customers.push(user);
+            currentUser = user;
+            
+            // Update UI
+            updateUserDisplay();
+            alert(`بەخێرهاتن ${name}! 🎉\nبە سەرکەوتووی تۆمارکرایت!`);
+            closeModal('registerModal');
+        });
+
+        // Handle login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const user = customers.find(c => c.email === email);
+            if (user) {
+                currentUser = user;
+                updateUserDisplay();
+                alert(`بەخێربێیتەوە ${user.name}! 😊`);
+                closeModal('loginModal');
+            } else {
+                alert('❌ ئیمەیڵ یان پاسوۆرد هەڵەیە!');
+            }
+        });
+
+        // Update user display
+        function updateUserDisplay() {
+            const userActions = document.querySelector('.user-actions');
+            if (currentUser) {
+                userActions.innerHTML = `
+                    <span style="color: white; margin-left: 1rem;">سڵاو ${currentUser.name} 👋</span>
+                    <button class="btn btn-primary" onclick="logout()">چوونەدەرەوە</button>
+                `;
+            }
+        }
+
+        // Logout function
+        window.logout = function() {
+            currentUser = null;
+            const userActions = document.querySelector('.user-actions');
+            userActions.innerHTML = `
+                <a href="#" class="btn btn-primary" onclick="showLoginModal()">چوونەژوور</a>
+                <a href="#" class="btn btn-primary" onclick="showRegisterModal()">خۆتۆمارکردن</a>
+            `;
+            alert('بە سەرکەوتووی چوویتە دەرەوە! 👋');
         }
 
         // Show admin panel
@@ -865,6 +1343,9 @@
                         products.splice(productIndex, 1);
         let cart = [];
         let currentEditId = null;
+        let customers = [];
+        let orders = [];
+        let currentUser = null;
                         alert('بەرهەمەکە سڕایەوە!');
                     }
                 } else {
@@ -944,19 +1425,9 @@
             closeModal('productModal');
         });
 
-        // Handle login form
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('بە سەرکەوتووی چوویتە ژوورەوە!');
-            closeModal('loginModal');
-        });
+        // Handle login form - removed duplicate
 
-        // Handle register form
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('بە سەرکەوتووی تۆمارکرایت!');
-            closeModal('registerModal');
-        });
+        // Handle register form - removed duplicate
 
         // Close modal when clicking outside
         window.onclick = function(event) {
