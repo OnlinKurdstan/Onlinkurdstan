@@ -377,9 +377,9 @@
     <header class="header">
         <div class="container">
             <nav class="nav">
-                <a href="#" class="logo">ئۆنلاین کوردستان</a>
+                <a href="#" class="logo" onclick="location.reload()">ئۆنلاین کوردستان</a>
                 <div class="search-bar">
-                    <input type="text" class="search-input" placeholder="گەڕان بۆ بەرهەمەکان..." id="searchInput">
+                    <input type="text" class="search-input" placeholder="گەڕان بۆ بەرهەمەکان..." id="searchInput" onkeypress="handleSearchKeyPress(event)">
                     <button class="search-btn" onclick="searchProducts()">🔍</button>
                 </div>
                 <div class="user-actions">
@@ -609,7 +609,7 @@
                         <option value="قەڵادزێ">قەڵادزێ</option>
                         <option value="کۆیە">کۆیە</option>
                         <option value="چەمچەماڵ">چەمچەماڵ</option>
-                        <option value="هەڵەبجە">هەڵەبجە</option>
+                        <option value="هەڵەبجەی شەهیدان">هەڵەبجەی شەهیدان</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -792,7 +792,151 @@
             });
         });
 
+        // Scroll to products section smoothly
+        window.scrollToProducts = function() {
+            const productsSection = document.getElementById('productsSection');
+            if (productsSection) {
+                productsSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        // Enhanced category filtering with smooth scroll
+        window.filterByCategory = function(category) {
+            let filteredProducts;
+            
+            if (category === 'all') {
+                filteredProducts = products;
+            } else {
+                filteredProducts = products.filter(product => product.category === category);
+            }
+            
+            displayProducts(filteredProducts);
+            
+            // Scroll to products section after filtering
+            setTimeout(() => {
+                scrollToProducts();
+            }, 100);
+            
+            // Show feedback message
+            const categoryNames = {
+                'electronics': 'ئەلیکترۆنیات',
+                'clothing': 'جل و بەرگ',
+                'home': 'ماڵەوە',
+                'books': 'کتێب',
+                'sports': 'وەرزش',
+                'beauty': 'جوانکاری',
+                'all': 'هەموو بەرهەمەکان'
+            };
+            
+            // Update page title or show notification
+            const message = `🔍 نیشاندانی: ${categoryNames[category] || category} (${filteredProducts.length} بەرهەم)`;
+            
+            // Create a temporary notification
+            showNotification(message);
+        }
+
+        // Handle search on Enter key press
+        window.handleSearchKeyPress = function(event) {
+            if (event.key === 'Enter') {
+                searchProducts();
+            }
+        }
+
         // Toggle admin mode with password
+        function toggleAdminMode() {
+            if (!adminMode) {
+                document.getElementById('adminPasswordModal').style.display = 'block';
+            } else {
+                adminMode = false;
+                const adminBtn = document.getElementById('adminPanelBtn');
+                adminBtn.style.display = 'none';
+                alert('🔒 دەستەڵاتی بەڕێوەبردن ناچالاک کرا!');
+                displayProducts(products);
+            }
+        }
+        window.searchProducts = function() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                displayProducts(products);
+                showNotification('🔍 هەموو بەرهەمەکان نیشاندرا');
+                return;
+            }
+            
+            const filteredProducts = products.filter(product => 
+                product.name.toLowerCase().includes(searchTerm) || 
+                product.description.toLowerCase().includes(searchTerm) ||
+                product.fullDescription.toLowerCase().includes(searchTerm) ||
+                product.category.toLowerCase().includes(searchTerm)
+            );
+            
+            displayProducts(filteredProducts);
+            
+            // Scroll to products and show results
+            setTimeout(() => {
+                scrollToProducts();
+                showNotification(`🔍 گەڕان بۆ "${searchTerm}" - ${filteredProducts.length} ئەنجام`);
+            }, 100);
+        }
+        function showNotification(message) {
+            // Remove existing notification
+            const existingNotification = document.getElementById('categoryNotification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            // Create new notification
+            const notification = document.createElement('div');
+            notification.id = 'categoryNotification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: #dc3545;
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 25px;
+                z-index: 9999;
+                font-weight: bold;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            
+            // Add animation keyframes
+            if (!document.getElementById('notificationStyles')) {
+                const style = document.createElement('style');
+                style.id = 'notificationStyles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (notification) {
+                    notification.style.animation = 'slideOut 0.3s ease-in';
+                    setTimeout(() => {
+                        if (notification && notification.parentNode) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }
+            }, 3000);
+        }
         function toggleAdminMode() {
             if (!adminMode) {
                 document.getElementById('adminPasswordModal').style.display = 'block';
@@ -1137,7 +1281,7 @@
                 'قەڵادزێ': 6000,
                 'کۆیە': 7000,
                 'چەمچەماڵ': 6000,
-                'هەڵەبجە': 8000
+                'هەڵەبجەی شەهیدان': 8000
             };
             
             if (province && deliveryCosts[province]) {
@@ -1176,7 +1320,7 @@
             const deliveryCosts = {
                 'هەولێر': 3000, 'سلێمانی': 5000, 'دهۆک': 4000, 'کەرکووک': 6000,
                 'زاخۆ': 7000, 'رانیە': 8000, 'قەڵادزێ': 6000, 'کۆیە': 7000,
-                'چەمچەماڵ': 6000, 'هەڵەبجە': 8000
+                'چەمچەماڵ': 6000, 'هەڵەبجەی شەهیدان': 8000
             };
             const deliveryCost = deliveryCosts[province] || 5000;
             const total = subtotal + deliveryCost;
@@ -1425,7 +1569,33 @@ ${itemsList}
             closeModal('productModal');
         });
 
-        // Handle login form - removed duplicate
+        // Handle login form with actual validation
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                // Simple demo login (you can expand this)
+                if (email && password) {
+                    // Create a demo user
+                    const user = { 
+                        name: email.split('@')[0], 
+                        email: email, 
+                        phone: '07501234567',
+                        id: Date.now() 
+                    };
+                    
+                    currentUser = user;
+                    updateUserDisplay();
+                    alert(`بەخێربێیتەوە ${user.name}! 😊`);
+                    closeModal('loginModal');
+                } else {
+                    alert('❌ تکایە ئیمەیڵ و پاسوۆرد داخڵ بکە!');
+                }
+            });
+        });
 
         // Handle register form - removed duplicate
 
