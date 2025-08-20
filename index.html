@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ئۆنلاین کوردستان - فرۆشگای گەورەی کوردستان</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 2rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 3rem 0.8rem 1rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            direction: rtl;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #dc3545;
+        }
+
+        .btn-primary:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        /* Menu Navigation */
+        .category-nav {
+            background: white;
+            border-bottom: 2px solid #e9ecef;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .category-menu {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem 0;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .category-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #333;
+            position: relative;
+        }
+
+        .category-item:hover {
+            background: #f8f9fa;
+            transform: translateY(-3px);
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-name {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: -50px;
+            background: white;
+            min-width: 300px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-radius: 15px;
+            z-index: 1000;
+            padding: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-section {
+            margin-bottom: 1rem;
+        }
+
+        .dropdown-title {
+            font-weight: bold;
+            color: #dc3545;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid #dc3545;
+        }
+
+        .dropdown-items {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .dropdown-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .dropdown-item:hover {
+            background: #f8f9fa;
+            color: #dc3545;
+        }
+
+        .dropdown-item-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.3rem;
+            font-size: 1.5rem;
+        }
+
+        .dropdown-item-name {
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .main-banner {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+            margin: 2rem 0;
+            border-radius: 15px;
+        }
+
+        .banner-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .products-section {
+            margin: 3rem 0;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            height: 200px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #ddd;
+        }
+
+        .product-info {
+            padding: 1rem;
+        }
+
+        .product-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            color: #dc3545;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .footer {
+            background: #333;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #dc3545;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .cart {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            background: #ffc107;
+            color: #333;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            z-index: 1000;
+            display: none;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            direction: rtl;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            direction: rtl;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 0.7rem;
+            transition: all 0.3s;
+            padding: 0.3rem;
+        }
+
+        .bottom-nav-item:hover,
+        .bottom-nav-item.active {
+            color: #dc3545;
+        }
+
+        .bottom-nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .bottom-nav-text {
+            font-size: 0.6rem;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 0.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Adjust body padding to account for bottom nav */
+        body {
+            padding-bottom: 60px;
+        }
+
+        /* Hide cart when bottom nav is visible */
+        @media (max-width: 768px) {
+            .cart {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Panel Button -->
+    <div class="admin-panel" id="adminPanelBtn">
+        <button onclick="showAdminPanel()" class="btn" style="background: none; border: none; color: white;">
+            🛠️ پانێڵی بەڕێوەبردن
+        </button>
+    </div>
+
+    <!-- Shopping Cart -->
+    <div class="cart" onclick="showCart()">
+        🛒
+        <div class="cart-count" id="cartCount">0</div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="#" class="logo" onclick="location.reload()">ئۆنلاین کوردستان</a>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="گەڕان بۆ بەرهەمەکان..." id="searchInput" onkeypress="handleSearchKeyPress(event)">
+                    <button class="search-btn" onclick="searchProducts()">🔍</button>
+                </div>
+                <div class="user-actions">
+                    <a href="#" class="btn btn-primary" onclick="showLoginModal()">چوونەژوور</a>
+                    <a href="#" class="btn btn-primary" onclick="showRegisterModal()">خۆتۆمارکردن</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Category Navigation -->
+    <nav class="category-nav">
+        <div class="container">
+            <div class="category-menu">
+                <a href="#" class="category-item" onclick="filterByCategory('all')">
+                    <div class="category-icon">🏠</div>
+                    <div class="category-name">هەموو</div>
+                </a>
+
+                <div class="category-item dropdown">
+                    <div class="category-icon">📱</div>
+                    <div class="category-name">مۆبایل</div>
+                    <div class="dropdown-content">
+                        <div class="dropdown-section">
+                            <div class="dropdown-title">ئینتخاب مۆبایل</div>
+                            <div class="dropdown-items">
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('iphone')">
+                                    <div class="dropdown-item-icon">📱</div>
+                                    <div class="dropdown-item-name">ئایفۆن</div>
+                                </a>
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('samsung')">
+                                    <div class="dropdown-item-icon">📱</div>
+                                    <div class="dropdown-item-name">سامسۆنگ</div>
+                                </a>
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('huawei')">
+                                    <div class="dropdown-item-icon">📱</div>
+                                    <div class="dropdown-item-name">هوآوێی</div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="dropdown-section">
+                            <div class="dropdown-title">برندهای مختلف گوشی مۆبایل</div>
+                            <div class="dropdown-items">
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('xiaomi')">
+                                    <div class="dropdown-item-icon">📱</div>
+                                    <div class="dropdown-item-name">شیاۆمی</div>
+                                </a>
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('oppo')">
+                                    <div class="dropdown-item-icon">📱</div>
+                                    <div class="dropdown-item-name">ئۆپۆ</div>
+                                </a>
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('nokia')">
+                                    <div class="dropdown-item-icon">📱</div>
+                                    <div class="dropdown-item-name">نۆکیا</div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="dropdown-section">
+                            <div class="dropdown-title">لوازم جانبی مۆبایل</div>
+                            <div class="dropdown-items">
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('accessories')">
+                                    <div class="dropdown-item-icon">🔌</div>
+                                    <div class="dropdown-item-name">چارجەر</div>
+                                </a>
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('covers')">
+                                    <div class="dropdown-item-icon">📦</div>
+                                    <div class="dropdown-item-name">کاڤەر</div>
+                                </a>
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('headphones')">
+                                    <div class="dropdown-item-icon">🎧</div>
+                                    <div class="dropdown-item-name">هێدفۆن</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-item dropdown">
+                    <div class="category-icon">🏠</div>
+                    <div class="category-name">خانە و آشپزخانە</div>
+                    <div class="dropdown-content">
+                        <div class="dropdown-section">
+                            <div class="dropdown-title">ظروف پخت و پز</div>
+                            <div class="dropdown-items">
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('cookware')">
+                                    <div class="dropdown-item-icon">🍳</div>
+                                    <div class="dropdown-item-name">سەرویس پخت</div>
+                                </a>
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('juicer')">
+                                    <div class="dropdown-item-icon">⚡</div>
+                                    <div class="dropdown-item-name">زوودەز</div>
+                                </a>
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('pots')">
+                                    <div class="dropdown-item-icon">🥘</div>
+                                    <div class="dropdown-item-name">قابلمە و تابە</div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="dropdown-section">
+                            <div class="dropdown-title">ابزار آشپزی</div>
+                            <div class="dropdown-items">
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('kitchen-tools')">
+                                    <div class="dropdown-item-icon">🔪</div>
+                                    <div class="dropdown-item-name">کێشی آشپزی</div>
+                                </a>
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('tea-coffee')">
+                                    <div class="dropdown-item-icon">☕</div>
+                                    <div class="dropdown-item-name">چا و قهوە</div>
+                                </a>
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('storage')">
+                                    <div class="dropdown-item-icon">📦</div>
+                                    <div class="dropdown-item-name">ظروف نگهداری</div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="dropdown-section">
+                            <div class="dropdown-title">لوازم تهیە کیک و دسر</div>
+                            <div class="dropdown-items">
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('baking')">
+                                    <div class="dropdown-item-icon">🧁</div>
+                                    <div class="dropdown-item-name">قاڵبی کیک</div>
+                                </a>
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('mixer')">
+                                    <div class="dropdown-item-icon">🥄</div>
+                                    <div class="dropdown-item-name">میکسەر</div>
+                                </a>
+                                <a href="#" class="dropdown-item" onclick="filterByCategory('dessert')">
+                                    <div class="dropdown-item-icon">🍰</div>
+                                    <div class="dropdown-item-name">دەسر</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" class="category-item" onclick="filterByCategory('electronics')">
+                    <div class="category-icon">💻</div>
+                    <div class="category-name">ئەلیکترۆنیات</div>
+                </a>
+
+                <a href="#" class="category-item" onclick="filterByCategory('clothing')">
+                    <div class="category-icon">👕</div>
+                    <div class="category-name">جل و بەرگ</div>
+                </a>
+
+                <a href="#" class="category-item" onclick="filterByCategory('books')">
+                    <div class="category-icon">📚</div>
+                    <div class="category-name">کتێب</div>
+                </a>
+
+                <a href="#" class="category-item" onclick="filterByCategory('sports')">
+                    <div class="category-icon">⚽</div>
+                    <div class="category-name">وەرزش</div>
+                </a>
+
+                <a href="#" class="category-item" onclick="filterByCategory('beauty')">
+                    <div class="category-icon">💄</div>
+                    <div class="category-name">جوانکاری</div>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Banner -->
+        <div class="main-banner">
+            <div class="banner-content">
+                <h1>بەخێربێیت بۆ ئۆنلاین کوردستان</h1>
+                <p>گەورەترین فرۆشگای ئەلیکترۆنی کوردستان</p>
+                <button class="btn btn-primary" onclick="scrollToProducts()">دەست بکە بە کڕین</button>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <section class="products-section" id="productsSection">
+            <h2 class="section-title">بەرهەمە بەناوبانگەکان</h2>
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be dynamically added here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ئۆنلاین کوردستان</h3>
+                    <p>گەورەترین فرۆشگای ئەلیکترۆنی کوردستان بۆ هەموو پێداویستیەکانتان</p>
+                </div>
+                <div class="footer-section">
+                    <h3>بەشەکان</h3>
+                    <a href="#">مۆبایل</a>
+                    <a href="#">خانە و آشپزخانە</a>
+                    <a href="#">ئەلیکترۆنیات</a>
+                    <a href="#">جل و بەرگ</a>
+                </div>
+                <div class="footer-section">
+                    <h3>خزمەتگوزاری</h3>
+                    <a href="#">پشتگیری</a>
+                    <a href="#">گەڕاندنەوە</a>
+                    <a href="#">گەیاندن</a>
+                    <a href="#">پارەدان</a>
+                </div>
+                <div class="footer-section">
+                    <h3>پەیوەندی</h3>
+                    <a href="tel:+9647501234567">📞 تەلەفۆن: ٠٧٥٠ ١٢٣ ٤٥٦٧</a>
+                    <a href="https://wa.me/9647501234567">💬 واتساپ: ٠٧٥٠ ١٢٣ ٤٥٦٧</a>
+                    <a href="mailto:info@onlinekurdistan.com">📧 ئیمەیڵ: info@onlinekurdistan.com</a>
+                    <a href="#">📍 ناونیشان: هەولێر، کوردستان</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <a href="#" class="bottom-nav-item active" onclick="goToHome()">
+            <div class="bottom-nav-icon">🏠</div>
+            <div class="bottom-nav-text">خانە</div>
+        </a>
+        
+        <a href="#" class="bottom-nav-item" onclick="goToCategories()">
+            <div class="bottom-nav-icon">📱</div>
+            <div class="bottom-nav-text">دەستەبەندی</div>
+        </a>
+        
+        <a href="#" class="bottom-nav-item" onclick="showCart()">
+            <div class="bottom-nav-icon" style="position: relative;">
+                🛒
+                <span class="notification-badge" id="bottomCartCount" style="display: none;">0</span>
+            </div>
+            <div class="bottom-nav-text">سەبەتە</div>
+        </a>
+        
+        <a href="#" class="bottom-nav-item" onclick="goToWishlist()">
+            <div class="bottom-nav-icon">❤️</div>
+            <div class="bottom-nav-text">دڵخواز</div>
+        </a>
+        
+        <a href="#" class="bottom-nav-item" onclick="goToProfile()">
+            <div class="bottom-nav-icon">👤</div>
+            <div class="bottom-nav-text">پرۆفایل</div>
+        </a>
+    </nav>
+
+    <!-- Modals will be added here by JavaScript -->
+    <div id="modalContainer"></div>
+
+    <script>
+        // Sample products data
+        let products = [
+            {
+                id: 1,
+                name: "مۆبایلی سامسۆنگ Galaxy S24",
+                description: "مۆبایلێکی زۆر باش بۆ هەموو کارەکان",
+                fullDescription: "مۆبایلێکی زۆر بەهێز بە پڕۆسێسۆری Snapdragon 8 Gen 3، کامێرای 200MP، بەتریی 5000mAh و نمایشکەری 6.8 ئینج",
+                price: 800000,
+                originalPrice: 900000,
+                discount: 11,
+                category: "samsung",
+                stock: 10,
+                icon: "📱",
+                colors: ["ڕەش", "سپی", "شین", "سۆر"],
+                sizes: ["128GB", "256GB", "512GB"],
+                images: ["📱", "📷", "🔋", "📺"]
+            },
+            {
+                id: 2,
+                name: "ئایفۆن 15 پرۆ",
+                description: "ئایفۆنی نوێترین",
+                fullDescription: "iPhone 15 Pro بە چیپی A17 Pro، کامێرای 48MP، تایتانیوم دیزاین",
+                price: 1200000,
+                originalPrice: 1400000,
+                discount: 14,
+                category: "iphone",
+                stock: 8,
+                icon: "📱",
+                colors: ["تایتانیوم", "شین", "سپی", "ڕەش"],
+                sizes: ["128GB", "256GB", "512GB", "1TB"],
+                images: ["📱", "📷", "🔋", "⚡"]
+            },
+            {
+                id: 3,
+                name: "سەرویسی پختوپەز ئارمان",
+                description: "سەرویسی تەواو بۆ آشپزخانە",
+                fullDescription: "سەرویسی 12 پارچە بۆ پختوپەز، کوالیتی بەرز، گونجاو بۆ هەموو جۆرە ئاگرێک",
+                price: 180000,
+                originalPrice: 220000,
+                discount: 18,
+                category: "cookware",
+                stock: 15,
+                icon: "🍳",
+                colors: ["ڕەش", "سپی", "قاوەیی"],
+                sizes: ["سەرویسی بچووک", "سەرویسی گەورە"],
+                images: ["🍳", "🥘", "🍲", "🔥"]
+            },
+            {
+                id: 4,
+                name: "قابلمەی کاسرۆڵ",
+                description: "قابلمەی بەرزکوالیتی",
+                fullDescription: "قابلمەی کاسرۆڵی 24 سانتی، دەستەی دار، گونجاو بۆ هەموو ئاگر",
+                price: 75000,
+                originalPrice: 90000,
+                discount: 17,
+                category: "pots",
+                stock: 20,
+                icon: "🥘",
+                colors: ["ڕەش", "سۆر", "شین"],
+                sizes: ["20cm", "24cm", "28cm"],
+                images: ["🥘", "🔥", "🍲", "💧"]
+            },
+            {
+                id: 5,
+                name: "زوودەزی فیلیپس",
+                description: "زوودەزی خێرا",
+                fullDescription: "زوودەزی فیلیپس بە توانای 800 واتی، پاکی کردنی ئاسان",
+                price: 95000,
+                originalPrice: 110000,
+                discount: 14,
+                category: "juicer",
+                stock: 12,
+                icon: "⚡",
+                colors: ["سپی", "ڕەش"],
+                sizes: ["قەبارەی ناوەندی"],
+                images: ["⚡", "🥤", "🍊", "🧽"]
+            },
+            {
+                id: 6,
+                name: "هێدفۆنی سۆنی",
+                description: "هێدفۆنی بەکوالیتی",
+                fullDescription: "هێدفۆنی wireless سۆنی، باتری 30 کاتژمێر، noise canceling",
+                price: 120000,
+                originalPrice: 140000,
+                discount: 14,
+                category: "headphones",
+                stock: 18,
+                icon: "🎧",
+                colors
