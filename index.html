@@ -3,57 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ئۆنلاین کوردستان - فرۆشگای گەورەی کوردستان</title>
+    <title>ئۆنلاین کوردستان</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            direction: rtl; background-color: #f8f9fa; color: #333; padding-bottom: 60px;
-        }
-        .header { background: linear-gradient(135deg, #dc3545, #e74c3c); color: white; padding: 1rem 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        body { font-family: Arial, sans-serif; direction: rtl; background: #f8f9fa; color: #333; padding-bottom: 70px; }
+        .header { background: linear-gradient(135deg, #dc3545, #e74c3c); color: white; padding: 1rem 0; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
-        .nav { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        .logo { font-size: 2rem; font-weight: bold; color: white; text-decoration: none; cursor: pointer; }
-        .search-bar { flex: 1; max-width: 500px; margin: 0 2rem; position: relative; }
-        .search-input { width: 100%; padding: 0.8rem 3rem 0.8rem 1rem; border: none; border-radius: 25px; font-size: 1rem; direction: rtl; }
-        .search-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer; }
-        .user-actions { display: flex; gap: 1rem; align-items: center; }
-        .btn { padding: 0.5rem 1rem; border: none; border-radius: 20px; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-block; }
+        .nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 2rem; font-weight: bold; color: white; text-decoration: none; }
+        .search-bar { flex: 1; max-width: 400px; margin: 0 1rem; }
+        .search-input { width: 100%; padding: 0.8rem; border: none; border-radius: 25px; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: 20px; cursor: pointer; text-decoration: none; display: inline-block; }
         .btn-primary { background: white; color: #dc3545; }
-        .btn-primary:hover { background: #f8f9fa; transform: translateY(-2px); }
-        .main-banner { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); color: white; text-align: center; padding: 3rem 0; margin: 2rem 0; border-radius: 15px; }
-        .banner-content h1 { font-size: 2.5rem; margin-bottom: 1rem; }
-        .products-section { margin: 3rem 0; }
-        .section-title { font-size: 1.8rem; margin-bottom: 1.5rem; color: #333; text-align: center; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
-        .product-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s; }
-        .product-card:hover { transform: translateY(-5px); }
-        .product-image { height: 200px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: #ddd; cursor: pointer; }
-        .product-info { padding: 1rem; }
-        .product-title { font-weight: bold; margin-bottom: 0.5rem; cursor: pointer; }
-        .product-price { color: #dc3545; font-size: 1.2rem; font-weight: bold; }
-        .footer { background: #333; color: white; padding: 2rem 0; margin-top: 3rem; }
-        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
-        .footer-section h3 { margin-bottom: 1rem; color: #dc3545; }
-        .footer-section a { color: #ccc; text-decoration: none; display: block; margin-bottom: 0.5rem; }
-        .footer-section a:hover { color: white; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e9ecef; display: flex; justify-content: space-around; align-items: center; height: 60px; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
-        .bottom-nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #666; font-size: 0.7rem; transition: all 0.3s; padding: 0.3rem; }
-        .bottom-nav-item:hover, .bottom-nav-item.active { color: #dc3545; }
-        .bottom-nav-icon { font-size: 1.2rem; margin-bottom: 0.2rem; position: relative; }
-        .bottom-nav-text { font-size: 0.6rem; }
-        .notification-badge { position: absolute; top: -2px; right: -2px; background: #dc3545; color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; }
+        .banner { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); color: white; text-align: center; padding: 3rem 0; margin: 2rem 0; border-radius: 15px; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .product-card { background: white; border-radius: 15px; padding: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
+        .product-icon { font-size: 4rem; margin: 1rem 0; }
+        .product-price { color: #dc3545; font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; height: 60px; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #666; font-size: 0.7rem; flex: 1; }
+        .nav-item.active { color: #dc3545; }
+        .nav-icon { font-size: 1.2rem; margin-bottom: 0.2rem; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; }
-        .modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 15px; width: 90%; max-width: 500px; direction: rtl; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; direction: rtl; }
+        .modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 15px; width: 90%; max-width: 500px; }
         .close { position: absolute; top: 10px; right: 15px; font-size: 30px; cursor: pointer; }
-        @media (max-width: 768px) {
-            .nav { flex-direction: column; gap: 1rem; }
-            .search-bar { order: 3; width: 100%; max-width: none; margin: 0; }
-            .banner-content h1 { font-size: 2rem; }
-        }
+        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .category-item { text-align: center; padding: 1.5rem; border: 2px solid #ddd; border-radius: 15px; cursor: pointer; transition: all 0.3s; }
+        .category-item:hover { border-color: #dc3545; transform: translateY(-3px); }
+        .notification { position: fixed; top: 100px; right: 20px; background: #dc3545; color: white; padding: 1rem 2rem; border-radius: 25px; z-index: 9999; }
     </style>
 </head>
 <body>
@@ -62,256 +39,184 @@
             <nav class="nav">
                 <a href="#" class="logo" onclick="goHome()">ئۆنلاین کوردستان</a>
                 <div class="search-bar">
-                    <input type="text" class="search-input" placeholder="گەڕان بۆ بەرهەمەکان..." id="searchInput">
-                    <button class="search-btn" onclick="searchProducts()">🔍</button>
+                    <input type="text" class="search-input" placeholder="گەڕان..." id="searchInput">
                 </div>
-                <div class="user-actions">
-                    <a href="#" class="btn btn-primary" onclick="showLoginModal()">چوونەژوور</a>
-                    <a href="#" class="btn btn-primary" onclick="showRegisterModal()">خۆتۆمارکردن</a>
+                <div>
+                    <a href="#" class="btn btn-primary" onclick="showLogin()">چوونەژوور</a>
                 </div>
             </nav>
         </div>
     </header>
 
     <main class="container">
-        <div class="main-banner">
-            <div class="banner-content">
-                <h1>بەخێربێیت بۆ ئۆنلاین کوردستان</h1>
-                <p>گەورەترین فرۆشگای ئەلیکترۆنی کوردستان</p>
-                <button class="btn btn-primary" onclick="scrollToProducts()">دەست بکە بە کڕین</button>
-            </div>
+        <div class="banner">
+            <h1>بەخێربێیت بۆ ئۆنلاین کوردستان</h1>
+            <p>گەورەترین فرۆشگای ئەلیکترۆنی کوردستان</p>
         </div>
 
-        <section class="products-section" id="productsSection">
-            <h2 class="section-title">بەرهەمە بەناوبانگەکان</h2>
-            <div class="products-grid" id="productsGrid"></div>
-        </section>
+        <div class="products-grid" id="productsGrid"></div>
     </main>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>ئۆنلاین کوردستان</h3>
-                    <p>گەورەترین فرۆشگای ئەلیکترۆنی کوردستان بۆ هەموو پێداویستیەکانتان</p>
-                </div>
-                <div class="footer-section">
-                    <h3>بەشەکان</h3>
-                    <a href="#">مۆبایل</a>
-                    <a href="#">خانە و آشپزخانە</a>
-                    <a href="#">ئەلیکترۆنیات</a>
-                    <a href="#">جل و بەرگ</a>
-                </div>
-                <div class="footer-section">
-                    <h3>خزمەتگوزاری</h3>
-                    <a href="#">پشتگیری</a>
-                    <a href="#">گەڕاندنەوە</a>
-                    <a href="#">گەیاندن</a>
-                    <a href="#">پارەدان</a>
-                </div>
-                <div class="footer-section">
-                    <h3>پەیوەندی</h3>
-                    <a href="tel:+9647501234567">📞 تەلەفۆن: ٠٧٥٠ ١٢٣ ٤٥٦٧</a>
-                    <a href="https://wa.me/9647501234567">💬 واتساپ: ٠٧٥٠ ١٢٣ ٤٥٦٧</a>
-                    <a href="mailto:info@onlinekurdistan.com">📧 ئیمەیڵ: info@onlinekurdistan.com</a>
-                    <a href="#">📍 ناونیشان: هەولێر، کوردستان</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
     <nav class="bottom-nav">
-        <a href="#" class="bottom-nav-item active" onclick="goToHome()">
-            <div class="bottom-nav-icon">🏠</div>
-            <div class="bottom-nav-text">خانە</div>
+        <a href="#" class="nav-item active" onclick="goHome()">
+            <div class="nav-icon">🏠</div>
+            <div>خانە</div>
         </a>
-        <a href="#" class="bottom-nav-item" onclick="goToCategories()">
-            <div class="bottom-nav-icon">📱</div>
-            <div class="bottom-nav-text">دەستەبەندی</div>
+        <a href="#" class="nav-item" onclick="showCategories()">
+            <div class="nav-icon">📱</div>
+            <div>دەستەبەندی</div>
         </a>
-        <a href="#" class="bottom-nav-item" onclick="showCart()">
-            <div class="bottom-nav-icon">
-                🛒
-                <span class="notification-badge" id="bottomCartCount" style="display: none;">0</span>
-            </div>
-            <div class="bottom-nav-text">سەبەتە</div>
+        <a href="#" class="nav-item" onclick="showCart()">
+            <div class="nav-icon">🛒</div>
+            <div>سەبەتە</div>
         </a>
-        <a href="#" class="bottom-nav-item" onclick="goToWishlist()">
-            <div class="bottom-nav-icon">❤️</div>
-            <div class="bottom-nav-text">دڵخواز</div>
+        <a href="#" class="nav-item" onclick="showWishlist()">
+            <div class="nav-icon">❤️</div>
+            <div>دڵخواز</div>
         </a>
-        <a href="#" class="bottom-nav-item" onclick="goToProfile()">
-            <div class="bottom-nav-icon">👤</div>
-            <div class="bottom-nav-text">پرۆفایل</div>
+        <a href="#" class="nav-item" onclick="showProfile()">
+            <div class="nav-icon">👤</div>
+            <div>پرۆفایل</div>
         </a>
     </nav>
 
     <script>
-        let products = [
-            { id: 1, name: "مۆبایلی سامسۆنگ Galaxy S24", description: "مۆبایلێکی زۆر باش بۆ هەموو کارەکان", price: 800000, originalPrice: 900000, discount: 11, category: "samsung", stock: 10, icon: "📱", colors: ["ڕەش", "سپی", "شین", "سۆر"], sizes: ["128GB", "256GB", "512GB"] },
-            { id: 2, name: "ئایفۆن 15 پرۆ", description: "ئایفۆنی نوێترین", price: 1200000, originalPrice: 1400000, discount: 14, category: "iphone", stock: 8, icon: "📱", colors: ["تایتانیوم", "شین", "سپی", "ڕەش"], sizes: ["128GB", "256GB", "512GB", "1TB"] },
-            { id: 3, name: "سەرویسی پختوپەز ئارمان", description: "سەرویسی تەواو بۆ آشپزخانە", price: 180000, originalPrice: 220000, discount: 18, category: "cookware", stock: 15, icon: "🍳", colors: ["ڕەش", "سپی", "قاوەیی"], sizes: ["سەرویسی بچووک", "سەرویسی گەورە"] },
-            { id: 4, name: "قابلمەی کاسرۆڵ", description: "قابلمەی بەرزکوالیتی", price: 75000, originalPrice: 90000, discount: 17, category: "pots", stock: 20, icon: "🥘", colors: ["ڕەش", "سۆر", "شین"], sizes: ["20cm", "24cm", "28cm"] },
-            { id: 5, name: "زوودەزی فیلیپس", description: "زوودەزی خێرا", price: 95000, originalPrice: 110000, discount: 14, category: "juicer", stock: 12, icon: "⚡", colors: ["سپی", "ڕەش"], sizes: ["قەبارەی ناوەندی"] },
-            { id: 6, name: "هێدفۆنی سۆنی", description: "هێدفۆنی بەکوالیتی", price: 120000, originalPrice: 140000, discount: 14, category: "headphones", stock: 18, icon: "🎧", colors: ["ڕەش", "سپی"], sizes: ["Wireless", "Wired"] }
+        const products = [
+            { id: 1, name: "مۆبایلی سامسۆنگ Galaxy S24", price: 800000, category: "mobile", icon: "📱" },
+            { id: 2, name: "ئایفۆن 15 پرۆ", price: 1200000, category: "mobile", icon: "📱" },
+            { id: 3, name: "سەرویسی پختوپەز", price: 180000, category: "home", icon: "🍳" },
+            { id: 4, name: "قابلمەی کاسرۆڵ", price: 75000, category: "home", icon: "🥘" },
+            { id: 5, name: "زوودەزی فیلیپس", price: 95000, category: "home", icon: "⚡" },
+            { id: 6, name: "هێدفۆنی سۆنی", price: 120000, category: "electronics", icon: "🎧" }
         ];
 
-        let cart = [], wishlist = [], currentUser = null;
+        let cart = [];
+        let wishlist = [];
+        let currentUser = null;
 
-        function init() {
-            displayProducts(products);
-            updateCartCount();
-        }
-
-        function displayProducts(productsToShow) {
+        function displayProducts(productsToShow = products) {
             const grid = document.getElementById('productsGrid');
             grid.innerHTML = '';
+            
             productsToShow.forEach(product => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
-                    <div class="product-image" onclick="showProductDetails(${product.id})">${product.icon}</div>
-                    <div class="product-info">
-                        <div class="product-title" onclick="showProductDetails(${product.id})">${product.name}</div>
-                        <p>${product.description}</p>
-                        ${product.discount ? `<div style="color: #28a745; font-size: 0.9rem; font-weight: bold;">داشکاندن ${product.discount}%</div>` : ''}
-                        ${product.originalPrice ? `<div style="color: #666; text-decoration: line-through; font-size: 0.9rem;">${product.originalPrice.toLocaleString()} دینار</div>` : ''}
-                        <div class="product-price">${product.price.toLocaleString()} دینار</div>
-                        <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                            <button class="btn btn-primary" onclick="addToCart(${product.id})" style="flex: 1;">سەبەتە</button>
-                            <button class="btn" onclick="addToWishlist(${product.id})" style="background: #f8f9fa; color: #dc3545; border: 1px solid #dc3545;">❤️</button>
-                        </div>
-                    </div>
+                    <div class="product-icon">${product.icon}</div>
+                    <h3>${product.name}</h3>
+                    <div class="product-price">${product.price.toLocaleString()} دینار</div>
+                    <button class="btn btn-primary" onclick="addToCart(${product.id})">زیادکردن بۆ سەبەتە</button>
+                    <button class="btn" onclick="addToWishlist(${product.id})" style="margin-right: 0.5rem; background: #f8f9fa; color: #dc3545;">❤️</button>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        function filterByCategory(category) {
-            let filtered;
-            if (category === 'all') {
-                filtered = products;
-            } else if (category === 'mobile') {
-                filtered = products.filter(p => ['samsung', 'iphone', 'huawei', 'xiaomi', 'oppo', 'nokia', 'accessories', 'covers', 'headphones'].includes(p.category));
-            } else if (category === 'home') {
-                filtered = products.filter(p => ['cookware', 'juicer', 'pots', 'kitchen-tools', 'tea-coffee', 'storage', 'baking', 'mixer', 'dessert'].includes(p.category));
-            } else {
-                filtered = products.filter(p => p.category === category);
-            }
-            displayProducts(filtered);
-            scrollToProducts();
-            showNotification(`نیشاندانی: ${getCategories()[category] || category} (${filtered.length} بەرهەم)`);
+        function goHome() {
+            setActiveNav(0);
+            displayProducts();
         }
 
-        function getCategories() {
-            return {
-                'all': 'هەموو بەرهەمەکان',
-                'mobile': 'مۆبایل و تەکنەلۆژیا',
-                'home': 'خانە و آشپزخانە',
-                'electronics': 'ئەلیکترۆنیات',
-                'clothing': 'جل و بەرگ',
-                'books': 'کتێب و فێربوون',
-                'sports': 'وەرزش و چالاکی',
-                'beauty': 'جوانکاری و تەندروستی'
-            };
-        }
-
-        function goToHome() {
-            setActiveBottomNav(0);
-            displayProducts(products);
-            scrollToTop();
-        }
-
-        function goToCategories() {
-            setActiveBottomNav(1);
-            showCategoriesModal();
-        }
-
-        function showCategoriesModal() {
-            const categories = [
-                { name: 'هەموو بەرهەمەکان', icon: '🏠', category: 'all' },
-                { name: 'مۆبایل و تەکنەلۆژیا', icon: '📱', category: 'mobile' },
-                { name: 'خانە و آشپزخانە', icon: '🍳', category: 'home' },
-                { name: 'ئەلیکترۆنیات', icon: '💻', category: 'electronics' },
-                { name: 'جل و بەرگ', icon: '👕', category: 'clothing' },
-                { name: 'کتێب و فێربوون', icon: '📚', category: 'books' },
-                { name: 'وەرزش و چالاکی', icon: '⚽', category: 'sports' },
-                { name: 'جوانکاری و تەندروستی', icon: '💄', category: 'beauty' }
-            ];
-
+        function showCategories() {
+            setActiveNav(1);
             const content = `
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; padding: 1rem;">
-                    ${categories.map(cat => `
-                        <div onclick="filterByCategory('${cat.category}'); closeModal('categoriesModal'); goToHome();" style="text-align: center; padding: 1.5rem 1rem; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border: 2px solid transparent; border-radius: 15px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 10px rgba(0,0,0,0.1);" onmouseover="this.style.borderColor='#dc3545'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 4px 20px rgba(220,53,69,0.2)'" onmouseout="this.style.borderColor='transparent'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'">
-                            <div style="font-size: 2.5rem; margin-bottom: 0.8rem; width: 60px; height: 60px; background: linear-gradient(135deg, #dc3545, #e74c3c); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.8rem; color: white;">${cat.icon}</div>
-                            <div style="font-weight: bold; color: #333; font-size: 0.9rem; line-height: 1.3;">${cat.name}</div>
-                        </div>
-                    `).join('')}
+                <div class="category-grid">
+                    <div class="category-item" onclick="filterCategory('all'); closeModal('categoriesModal');">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏠</div>
+                        <div>هەموو بەرهەمەکان</div>
+                    </div>
+                    <div class="category-item" onclick="filterCategory('mobile'); closeModal('categoriesModal');">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">📱</div>
+                        <div>مۆبایل</div>
+                    </div>
+                    <div class="category-item" onclick="filterCategory('home'); closeModal('categoriesModal');">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">🍳</div>
+                        <div>خانە و آشپزخانە</div>
+                    </div>
+                    <div class="category-item" onclick="filterCategory('electronics'); closeModal('categoriesModal');">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">💻</div>
+                        <div>ئەلیکترۆنیات</div>
+                    </div>
                 </div>
             `;
-            createModal('categoriesModal', 'دەستەبەندی بەرهەمەکان', content);
+            createModal('categoriesModal', 'دەستەبەندیەکان', content);
         }
 
         function showCart() {
-            setActiveBottomNav(2);
-            const content = cart.length === 0 
-                ? '<div style="text-align: center; padding: 2rem;">سەبەتەکەت بەتاڵە</div>'
-                : cart.map(item => `
+            setActiveNav(2);
+            const content = cart.length === 0 ? 
+                '<div style="text-align: center; padding: 2rem;">سەبەتەکەت بەتاڵە</div>' :
+                cart.map(item => `
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #eee;">
-                        <div><strong>${item.name}</strong><br><span style="color: #dc3545;">${item.price.toLocaleString()} دینار</span></div>
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            <span style="color: #dc3545;">${item.price.toLocaleString()} دینار</span>
+                        </div>
                         <button onclick="removeFromCart(${item.id}); showCart();" style="background: #dc3545; color: white; border: none; padding: 0.5rem; border-radius: 5px;">سڕینەوە</button>
                     </div>
-                `).join('') + '<div style="text-align: center; margin-top: 2rem;"><button class="btn btn-primary" onclick="checkout()">کڕین</button></div>';
+                `).join('');
             createModal('cartModal', 'سەبەتەی کڕین', content);
         }
 
-        function goToWishlist() {
-            setActiveBottomNav(3);
-            const content = wishlist.length === 0 
-                ? '<div style="text-align: center; padding: 2rem;">هیچ بەرهەمێک لە لیستی دڵخوازەکاندا نییە</div>'
-                : wishlist.map(item => `
+        function showWishlist() {
+            setActiveNav(3);
+            const content = wishlist.length === 0 ?
+                '<div style="text-align: center; padding: 2rem;">هیچ بەرهەمێک لە لیستی دڵخوازەکاندا نییە</div>' :
+                wishlist.map(item => `
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #eee;">
-                        <div><strong>${item.name}</strong><br><span style="color: #dc3545;">${item.price.toLocaleString()} دینار</span></div>
                         <div>
-                            <button onclick="addToCart(${item.id}); closeModal('wishlistModal');" class="btn btn-primary">زیادکردن</button>
-                            <button onclick="removeFromWishlist(${item.id}); goToWishlist();" style="background: #dc3545; color: white; border: none; padding: 0.5rem; border-radius: 5px; margin-right: 0.5rem;">سڕینەوە</button>
+                            <strong>${item.name}</strong><br>
+                            <span style="color: #dc3545;">${item.price.toLocaleString()} دینار</span>
                         </div>
+                        <button onclick="removeFromWishlist(${item.id}); showWishlist();" style="background: #dc3545; color: white; border: none; padding: 0.5rem; border-radius: 5px;">سڕینەوە</button>
                     </div>
                 `).join('');
             createModal('wishlistModal', 'لیستی دڵخوازەکان', content);
         }
 
-        function goToProfile() {
-            setActiveBottomNav(4);
+        function showProfile() {
+            setActiveNav(4);
             if (currentUser) {
                 const content = `
-                    <div style="text-align: center; padding: 2rem;">
+                    <div style="text-align: center;">
                         <div style="width: 80px; height: 80px; background: #dc3545; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2rem; color: white;">👤</div>
                         <h3>${currentUser.name}</h3>
-                        <p style="color: #666;">${currentUser.email}</p>
-                        <br>
-                        <button class="btn btn-primary" onclick="logout(); closeModal('profileModal');" style="width: 100%;">چوونەدەرەوە</button>
+                        <button onclick="logout(); closeModal('profileModal');" class="btn btn-primary" style="margin-top: 1rem;">چوونەدەرەوە</button>
                     </div>
                 `;
-                createModal('profileModal', 'پرۆفایلی کەسی', content);
+                createModal('profileModal', 'پرۆفایل', content);
             } else {
-                showLoginModal();
+                showLogin();
             }
         }
 
-        function setActiveBottomNav(index) {
-            document.querySelectorAll('.bottom-nav-item').forEach((item, i) => {
-                item.classList.toggle('active', i === index);
-            });
+        function showLogin() {
+            const content = `
+                <input type="text" placeholder="ناو" id="loginName" style="width: 100%; padding: 0.8rem; margin: 0.5rem 0; border: 1px solid #ddd; border-radius: 5px;">
+                <button onclick="login()" class="btn btn-primary" style="width: 100%;">چوونەژوور</button>
+            `;
+            createModal('loginModal', 'چوونەژوور', content);
+        }
+
+        function login() {
+            const name = document.getElementById('loginName').value;
+            if (name) {
+                currentUser = { name };
+                closeModal('loginModal');
+                showNotification(`بەخێربێیتەوە ${name}!`);
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            showNotification('بە سەرکەوتووی چوویتە دەرەوە');
         }
 
         function addToCart(productId) {
             const product = products.find(p => p.id === productId);
-            if (product && product.stock > 0) {
-                cart.push({...product});
-                product.stock--;
-                updateCartCount();
-                showNotification('بەرهەم زیادکرا بۆ سەبەتە!');
+            if (product && !cart.find(c => c.id === productId)) {
+                cart.push(product);
+                showNotification('بەرهەم زیادکرا بۆ سەبەتە');
             }
         }
 
@@ -319,28 +224,31 @@
             const product = products.find(p => p.id === productId);
             if (product && !wishlist.find(w => w.id === productId)) {
                 wishlist.push(product);
-                showNotification('بەرهەم زیادکرا بۆ لیستی دڵخوازەکان!');
+                showNotification('بەرهەم زیادکرا بۆ لیستی دڵخوازەکان');
             }
         }
 
         function removeFromCart(productId) {
-            const index = cart.findIndex(c => c.id === productId);
-            if (index > -1) {
-                cart.splice(index, 1);
-                updateCartCount();
-            }
+            cart = cart.filter(c => c.id !== productId);
         }
 
         function removeFromWishlist(productId) {
-            const index = wishlist.findIndex(w => w.id === productId);
-            if (index > -1) wishlist.splice(index, 1);
+            wishlist = wishlist.filter(w => w.id !== productId);
         }
 
-        function updateCartCount() {
-            const count = cart.length;
-            const badge = document.getElementById('bottomCartCount');
-            badge.textContent = count;
-            badge.style.display = count > 0 ? 'flex' : 'none';
+        function filterCategory(category) {
+            if (category === 'all') {
+                displayProducts();
+            } else {
+                displayProducts(products.filter(p => p.category === category));
+            }
+            showNotification(`دەستەبەندی ${category} نیشاندرا`);
+        }
+
+        function setActiveNav(index) {
+            document.querySelectorAll('.nav-item').forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
         }
 
         function createModal(id, title, content) {
@@ -366,55 +274,14 @@
 
         function showNotification(message) {
             const notification = document.createElement('div');
-            notification.style.cssText = 'position: fixed; top: 100px; right: 20px; background: #dc3545; color: white; padding: 1rem 2rem; border-radius: 25px; z-index: 9999; box-shadow: 0 4px 15px rgba(0,0,0,0.2);';
+            notification.className = 'notification';
             notification.textContent = message;
             document.body.appendChild(notification);
             setTimeout(() => notification.remove(), 3000);
         }
 
-        function scrollToProducts() {
-            document.getElementById('productsSection').scrollIntoView({behavior: 'smooth'});
-        }
-
-        function scrollToTop() {
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
-
-        function showLoginModal() {
-            const content = `
-                <div class="form-group">
-                    <input type="email" placeholder="ئیمەیڵ" id="loginEmail">
-                </div>
-                <div class="form-group">
-                    <input type="password" placeholder="پاسوۆرد" id="loginPassword">
-                </div>
-                <button onclick="login()" class="btn btn-primary" style="width: 100%;">چوونەژوور</button>
-            `;
-            createModal('loginModal', 'چوونەژوور', content);
-        }
-
-        function showRegisterModal() {
-            const content = `
-                <div class="form-group">
-                    <input type="text" placeholder="ناو" id="registerName">
-                </div>
-                <div class="form-group">
-                    <input type="email" placeholder="ئیمەیڵ" id="registerEmail">
-                </div>
-                <button onclick="register()" class="btn btn-primary" style="width: 100%;">خۆتۆمارکردن</button>
-            `;
-            createModal('registerModal', 'خۆتۆمارکردن', content);
-        }
-
-        function login() {
-            const email = document.getElementById('loginEmail').value;
-            if (email) {
-                currentUser = {name: email.split('@')[0], email};
-                closeModal('loginModal');
-                showNotification(`بەخێربێیتەوە ${currentUser.name}!`);
-            }
-        }
-
-        function register() {
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;چ
+        // Initialize
+        displayProducts();
+    </script>
+</body>
+</html>
