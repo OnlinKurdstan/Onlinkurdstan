@@ -408,48 +408,76 @@
             { id: 'accessories', name: 'ئیکسسواراتی سەیارە', icon: '🔌' }
         ];
 
-        // Load data from localStorage on page load
+        // Cookie functions for data persistence
+        function setCookie(name, value, days = 30) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${name}=${encodeURIComponent(JSON.stringify(value))};expires=${expires.toUTCString()};path=/`;
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) {
+                    try {
+                        return JSON.parse(decodeURIComponent(c.substring(nameEQ.length, c.length)));
+                    } catch (e) {
+                        return null;
+                    }
+                }
+            }
+            return null;
+        }
+
+        function deleteCookie(name) {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        }
+
+        // Load data from cookies on page load
         function loadDataFromStorage() {
             try {
-                const savedCart = localStorage.getItem('kurdistan_cart');
-                if (savedCart) shoppingCart = JSON.parse(savedCart);
+                const savedCart = getCookie('kurdistan_cart');
+                if (savedCart) shoppingCart = savedCart;
                 
-                const savedWishlist = localStorage.getItem('kurdistan_wishlist');
-                if (savedWishlist) userWishlist = JSON.parse(savedWishlist);
+                const savedWishlist = getCookie('kurdistan_wishlist');
+                if (savedWishlist) userWishlist = savedWishlist;
                 
-                const savedUser = localStorage.getItem('kurdistan_user');
+                const savedUser = getCookie('kurdistan_user');
                 if (savedUser) {
-                    loggedUser = JSON.parse(savedUser);
+                    loggedUser = savedUser;
                     document.getElementById('loginBtn').textContent = loggedUser.name;
                 }
                 
-                const savedUsers = localStorage.getItem('kurdistan_users');
-                if (savedUsers) registeredUsers = JSON.parse(savedUsers);
+                const savedUsers = getCookie('kurdistan_users');
+                if (savedUsers) registeredUsers = savedUsers;
                 
-                const savedProducts = localStorage.getItem('kurdistan_products');
+                const savedProducts = getCookie('kurdistan_products');
                 if (savedProducts) {
                     productsList.length = 0;
-                    productsList.push(...JSON.parse(savedProducts));
+                    productsList.push(...savedProducts);
                     currentProducts = [...productsList];
                 }
                 
-                const savedCategories = localStorage.getItem('kurdistan_categories');
-                if (savedCategories) categories = JSON.parse(savedCategories);
+                const savedCategories = getCookie('kurdistan_categories');
+                if (savedCategories) categories = savedCategories;
                 
             } catch (error) {
                 console.log('Error loading data from storage:', error);
             }
         }
 
-        // Save data to localStorage
+        // Save data to cookies
         function saveDataToStorage() {
             try {
-                localStorage.setItem('kurdistan_cart', JSON.stringify(shoppingCart));
-                localStorage.setItem('kurdistan_wishlist', JSON.stringify(userWishlist));
-                localStorage.setItem('kurdistan_user', JSON.stringify(loggedUser));
-                localStorage.setItem('kurdistan_users', JSON.stringify(registeredUsers));
-                localStorage.setItem('kurdistan_products', JSON.stringify(productsList));
-                localStorage.setItem('kurdistan_categories', JSON.stringify(categories));
+                setCookie('kurdistan_cart', shoppingCart);
+                setCookie('kurdistan_wishlist', userWishlist);
+                setCookie('kurdistan_user', loggedUser);
+                setCookie('kurdistan_users', registeredUsers);
+                setCookie('kurdistan_products', productsList);
+                setCookie('kurdistan_categories', categories);
             } catch (error) {
                 console.log('Error saving data to storage:', error);
             }
