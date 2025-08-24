@@ -408,6 +408,53 @@
             { id: 'accessories', name: 'ئیکسسواراتی سەیارە', icon: '🔌' }
         ];
 
+        // Load data from localStorage on page load
+        function loadDataFromStorage() {
+            try {
+                const savedCart = localStorage.getItem('kurdistan_cart');
+                if (savedCart) shoppingCart = JSON.parse(savedCart);
+                
+                const savedWishlist = localStorage.getItem('kurdistan_wishlist');
+                if (savedWishlist) userWishlist = JSON.parse(savedWishlist);
+                
+                const savedUser = localStorage.getItem('kurdistan_user');
+                if (savedUser) {
+                    loggedUser = JSON.parse(savedUser);
+                    document.getElementById('loginBtn').textContent = loggedUser.name;
+                }
+                
+                const savedUsers = localStorage.getItem('kurdistan_users');
+                if (savedUsers) registeredUsers = JSON.parse(savedUsers);
+                
+                const savedProducts = localStorage.getItem('kurdistan_products');
+                if (savedProducts) {
+                    productsList.length = 0;
+                    productsList.push(...JSON.parse(savedProducts));
+                    currentProducts = [...productsList];
+                }
+                
+                const savedCategories = localStorage.getItem('kurdistan_categories');
+                if (savedCategories) categories = JSON.parse(savedCategories);
+                
+            } catch (error) {
+                console.log('Error loading data from storage:', error);
+            }
+        }
+
+        // Save data to localStorage
+        function saveDataToStorage() {
+            try {
+                localStorage.setItem('kurdistan_cart', JSON.stringify(shoppingCart));
+                localStorage.setItem('kurdistan_wishlist', JSON.stringify(userWishlist));
+                localStorage.setItem('kurdistan_user', JSON.stringify(loggedUser));
+                localStorage.setItem('kurdistan_users', JSON.stringify(registeredUsers));
+                localStorage.setItem('kurdistan_products', JSON.stringify(productsList));
+                localStorage.setItem('kurdistan_categories', JSON.stringify(categories));
+            } catch (error) {
+                console.log('Error saving data to storage:', error);
+            }
+        }
+
         function handleLogoClick() {
             adminClickCount++;
             
@@ -627,6 +674,7 @@
 
             if (user) {
                 loggedUser = { name: user.name, email: user.email, phone: user.phone };
+                saveDataToStorage();
                 closeModal();
                 showAlert(`بەخێربێیتەوە ${user.name}!`);
                 document.getElementById('loginBtn').textContent = user.name;
@@ -671,6 +719,7 @@
             registeredUsers.push(newUser);
             loggedUser = { name, email, phone };
             
+            saveDataToStorage();
             closeModal();
             showAlert(`ئەکاونتەکەت دروستکرا، بەخێربێیت ${name}!`);
             document.getElementById('loginBtn').textContent = name;
@@ -820,6 +869,7 @@
             
             productsList.push(newProduct);
             currentProducts = [...productsList];
+            saveDataToStorage();
             renderProducts();
             showAlert('بەرهەمی نوێ زیادکرا');
             showProductManager();
@@ -835,6 +885,7 @@
                 userWishlist = userWishlist.filter(w => w.id !== productId);
                 updateCartCounter();
                 
+                saveDataToStorage();
                 renderProducts();
                 showAlert('بەرهەم سڕایەوە');
             }
@@ -897,6 +948,7 @@
             const newCategory = { id, name, icon };
             categories.push(newCategory);
             
+            saveDataToStorage();
             showAlert(`دەستەبەندی "${name}" زیادکرا`);
             showCategoryManager();
         }
@@ -919,6 +971,7 @@
                 });
                 
                 currentProducts = [...productsList];
+                saveDataToStorage();
                 renderProducts();
                 showAlert('دەستەبەندی سڕایەوە');
             }
@@ -957,6 +1010,7 @@
             if (product && !shoppingCart.find(c => c.id === productId)) {
                 shoppingCart.push(product);
                 updateCartCounter();
+                saveDataToStorage();
                 showAlert(`${product.name} زیادکرا بۆ سەبەتە`);
             } else if (shoppingCart.find(c => c.id === productId)) {
                 showAlert('ئەم بەرهەمە پێشتر زیادکراوە');
@@ -967,6 +1021,7 @@
             const product = productsList.find(p => p.id === productId);
             if (product && !userWishlist.find(w => w.id === productId)) {
                 userWishlist.push(product);
+                saveDataToStorage();
                 showAlert(`${product.name} زیادکرا بۆ لیستی دڵخوازەکان`);
             } else if (userWishlist.find(w => w.id === productId)) {
                 showAlert('ئەم بەرهەمە پێشتر زیادکراوە');
@@ -976,11 +1031,13 @@
         function removeFromCart(productId) {
             shoppingCart = shoppingCart.filter(c => c.id !== productId);
             updateCartCounter();
+            saveDataToStorage();
             showAlert('بەرهەم سڕایەوە لە سەبەتە');
         }
 
         function removeFromWishlist(productId) {
             userWishlist = userWishlist.filter(w => w.id !== productId);
+            saveDataToStorage();
             showAlert('بەرهەم سڕایەوە لە لیستی دڵخوازەکان');
         }
 
@@ -1087,6 +1144,7 @@
             
             shoppingCart = [];
             updateCartCounter();
+            saveDataToStorage();
             closeModal();
             
             showAlert(`داواکاری کڕینەکەت بە سەرکەوتووی نێردرا! شێوازی پارەدان: ${paymentText}, کۆی گشتی: ${total.toLocaleString()} دینار`);
