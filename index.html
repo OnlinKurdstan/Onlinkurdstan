@@ -5,44 +5,346 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ئۆنلاین کوردستان</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; direction: rtl; background: #f8f9fa; color: #333; padding-bottom: 70px; }
-        .header { background: linear-gradient(135deg, #dc3545, #e74c3c); color: white; padding: 1rem 0; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
-        .nav { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 2rem; font-weight: bold; color: white; text-decoration: none; }
-        .search-bar { flex: 1; max-width: 400px; margin: 0 1rem; }
-        .search-input { width: 100%; padding: 0.8rem; border: none; border-radius: 25px; }
-        .btn { padding: 0.5rem 1rem; border: none; border-radius: 20px; cursor: pointer; text-decoration: none; display: inline-block; }
-        .btn-primary { background: white; color: #dc3545; }
-        .banner { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); color: white; text-align: center; padding: 3rem 0; margin: 2rem 0; border-radius: 15px; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
-        .product-card { background: white; border-radius: 15px; padding: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
-        .product-icon { font-size: 4rem; margin: 1rem 0; }
-        .product-price { color: #dc3545; font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; height: 60px; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #666; font-size: 0.7rem; flex: 1; }
-        .nav-item.active { color: #dc3545; }
-        .nav-icon { font-size: 1.2rem; margin-bottom: 0.2rem; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; }
-        .modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 15px; width: 90%; max-width: 500px; }
-        .close { position: absolute; top: 10px; right: 15px; font-size: 30px; cursor: pointer; }
-        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-        .category-item { text-align: center; padding: 1.5rem; border: 2px solid #ddd; border-radius: 15px; cursor: pointer; transition: all 0.3s; }
-        .category-item:hover { border-color: #dc3545; transform: translateY(-3px); }
-        .notification { position: fixed; top: 100px; right: 20px; background: #dc3545; color: white; padding: 1rem 2rem; border-radius: 25px; z-index: 9999; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            direction: rtl; 
+            background: #f8f9fa; 
+            color: #333; 
+            padding-bottom: 70px; 
+            min-height: 100vh;
+        }
+        
+        .header { 
+            background: linear-gradient(135deg, #dc3545, #e74c3c); 
+            color: white; 
+            padding: 1rem 0; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 1rem; 
+        }
+        
+        .nav { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 1rem;
+        }
+        
+        .logo { 
+            font-size: 1.8rem; 
+            font-weight: bold; 
+            color: white; 
+            text-decoration: none; 
+            cursor: pointer;
+        }
+        
+        .search-bar { 
+            flex: 1; 
+            max-width: 300px; 
+            position: relative;
+        }
+        
+        .search-input { 
+            width: 100%; 
+            padding: 0.8rem; 
+            border: none; 
+            border-radius: 25px; 
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .btn { 
+            padding: 0.7rem 1.5rem; 
+            border: none; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-block; 
+            font-weight: 600;
+            background: white; 
+            color: #dc3545; 
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .banner { 
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4); 
+            color: white; 
+            text-align: center; 
+            padding: 3rem 1rem; 
+            margin: 2rem 0; 
+            border-radius: 15px; 
+        }
+        
+        .banner h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .products-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 1.5rem; 
+            margin: 2rem 0; 
+        }
+        
+        .product-card { 
+            background: white; 
+            border-radius: 15px; 
+            padding: 1.5rem; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            text-align: center; 
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-icon { 
+            font-size: 4rem; 
+            margin: 1rem 0; 
+        }
+        
+        .product-price { 
+            color: #dc3545; 
+            font-size: 1.3rem; 
+            font-weight: bold; 
+            margin: 1rem 0; 
+        }
+        
+        .btn-cart {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            margin: 0.3rem;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-cart:hover {
+            background: #c82333;
+        }
+        
+        .btn-wishlist {
+            background: white;
+            color: #dc3545;
+            border: 2px solid #dc3545;
+            padding: 0.7rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin: 0.3rem;
+        }
+        
+        .btn-wishlist:hover {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            background: white; 
+            border-top: 1px solid #ddd; 
+            display: flex; 
+            height: 70px; 
+            z-index: 1000; 
+        }
+        
+        .nav-item { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            text-decoration: none; 
+            color: #666; 
+            font-size: 0.8rem; 
+            flex: 1; 
+            cursor: pointer;
+        }
+        
+        .nav-item.active { 
+            color: #dc3545; 
+        }
+        
+        .nav-icon { 
+            font-size: 1.3rem; 
+            margin-bottom: 0.2rem; 
+        }
+        
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.5); 
+            z-index: 2000; 
+        }
+        
+        .modal-content { 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 15px; 
+            width: 90%; 
+            max-width: 500px; 
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .close { 
+            position: absolute; 
+            top: 15px; 
+            right: 20px; 
+            font-size: 25px; 
+            cursor: pointer; 
+            color: #666;
+        }
+        
+        .close:hover { 
+            color: #dc3545; 
+        }
+        
+        .input-field {
+            width: 100%; 
+            padding: 1rem; 
+            margin: 0.5rem 0; 
+            border: 2px solid #ddd; 
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #dc3545;
+        }
+        
+        .notification { 
+            position: fixed; 
+            top: 100px; 
+            right: 20px; 
+            background: #dc3545; 
+            color: white; 
+            padding: 1rem 1.5rem; 
+            border-radius: 25px; 
+            z-index: 9999; 
+        }
+        
+        .category-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 1rem; 
+        }
+        
+        .category-item { 
+            text-align: center; 
+            padding: 1.5rem; 
+            border: 2px solid #ddd; 
+            border-radius: 15px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+        }
+        
+        .category-item:hover { 
+            border-color: #dc3545; 
+            background: #f8f9fa;
+        }
+        
+        .cart-total {
+            background: #dc3545;
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        
+        .item-row {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 1rem; 
+            border-bottom: 1px solid #eee; 
+            margin-bottom: 0.5rem;
+        }
+        
+        .remove-btn {
+            background: #dc3545; 
+            color: white; 
+            border: none; 
+            padding: 0.5rem 1rem; 
+            border-radius: 10px; 
+            cursor: pointer;
+        }
+        
+        .checkout-btn {
+            width: 100%; 
+            background: #28a745; 
+            color: white; 
+            border: none; 
+            padding: 1rem; 
+            border-radius: 10px; 
+            margin-top: 1rem; 
+            font-size: 1rem; 
+            cursor: pointer;
+        }
+        
+        .register-link {
+            text-align: center;
+            margin-top: 1rem;
+            color: #dc3545;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .logo { font-size: 1.5rem; }
+            .banner h1 { font-size: 1.8rem; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+            .nav { flex-wrap: wrap; }
+            .search-bar { order: 3; width: 100%; margin-top: 1rem; }
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="container">
             <nav class="nav">
-                <a href="#" class="logo" onclick="goHome()">ئۆنلاین کوردستان</a>
+                <div class="logo" onclick="handleLogoClick()">ئۆنلاین کوردستان</div>
                 <div class="search-bar">
                     <input type="text" class="search-input" placeholder="گەڕان..." id="searchInput">
                 </div>
                 <div>
-                    <a href="#" class="btn btn-primary" onclick="showLogin()">چوونەژوور</a>
+                    <span class="btn" onclick="showLoginModal()" id="loginBtn">چوونەژوور</span>
                 </div>
             </nav>
         </div>
@@ -58,30 +360,30 @@
     </main>
 
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active" onclick="goHome()">
+        <div class="nav-item active" onclick="loadHome()">
             <div class="nav-icon">🏠</div>
             <div>خانە</div>
-        </a>
-        <a href="#" class="nav-item" onclick="showCategories()">
+        </div>
+        <div class="nav-item" onclick="showCategories()">
             <div class="nav-icon">📱</div>
             <div>دەستەبەندی</div>
-        </a>
-        <a href="#" class="nav-item" onclick="showCart()">
+        </div>
+        <div class="nav-item" onclick="showCart()">
             <div class="nav-icon">🛒</div>
-            <div>سەبەتە</div>
-        </a>
-        <a href="#" class="nav-item" onclick="showWishlist()">
+            <div>سەبەتە <span id="cartCount" style="background: #f5576c; color: white; border-radius: 50%; padding: 0.2rem 0.5rem; font-size: 0.7rem; display: none;"></span></div>
+        </div>
+        <div class="nav-item" onclick="showWishlist()">
             <div class="nav-icon">❤️</div>
             <div>دڵخواز</div>
-        </a>
-        <a href="#" class="nav-item" onclick="showProfile()">
+        </div>
+        <div class="nav-item" onclick="showProfile()">
             <div class="nav-icon">👤</div>
             <div>پرۆفایل</div>
-        </a>
+        </div>
     </nav>
 
     <script>
-        const products = [
+        const productsList = [
             { id: 1, name: "مۆبایلی سامسۆنگ Galaxy S24", price: 800000, category: "mobile", icon: "📱" },
             { id: 2, name: "ئایفۆن 15 پرۆ", price: 1200000, category: "mobile", icon: "📱" },
             { id: 3, name: "سەرویسی پختوپەز", price: 180000, category: "home", icon: "🍳" },
@@ -90,198 +392,792 @@
             { id: 6, name: "هێدفۆنی سۆنی", price: 120000, category: "electronics", icon: "🎧" }
         ];
 
-        let cart = [];
-        let wishlist = [];
-        let currentUser = null;
+        let shoppingCart = [];
+        let userWishlist = [];
+        let loggedUser = null;
+        let currentProducts = [...productsList];
+        let adminClickCount = 0;
+        let adminClickTimer = null;
+        let registeredUsers = [];
+        const ADMIN_PASSWORD = "admin123";
+        
+        let categories = [
+            { id: 'mobile', name: 'مۆبایل', icon: '📱' },
+            { id: 'home', name: 'خانە و آشپزخانە', icon: '🍳' },
+            { id: 'electronics', name: 'ئەلیکترۆنیات', icon: '💻' },
+            { id: 'accessories', name: 'ئیکسسواراتی سەیارە', icon: '🔌' }
+        ];
 
-        function displayProducts(productsToShow = products) {
+        function handleLogoClick() {
+            adminClickCount++;
+            
+            if (adminClickTimer) {
+                clearTimeout(adminClickTimer);
+            }
+            
+            if (adminClickCount === 3) {
+                showAdminLogin();
+                adminClickCount = 0;
+                return;
+            }
+            
+            adminClickTimer = setTimeout(() => {
+                if (adminClickCount < 3) {
+                    loadHome();
+                }
+                adminClickCount = 0;
+            }, 1000);
+        }
+
+        function loadHome() {
+            setNavActive(0);
+            currentProducts = [...productsList];
+            renderProducts();
+            document.getElementById('searchInput').value = '';
+        }
+
+        function renderProducts(products = currentProducts) {
             const grid = document.getElementById('productsGrid');
             grid.innerHTML = '';
             
-            productsToShow.forEach(product => {
+            if (products.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; padding: 2rem; grid-column: 1 / -1;"><h3>هیچ بەرهەمێک نەدۆزرایەوە</h3></div>';
+                return;
+            }
+            
+            products.forEach(product => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
                     <div class="product-icon">${product.icon}</div>
                     <h3>${product.name}</h3>
                     <div class="product-price">${product.price.toLocaleString()} دینار</div>
-                    <button class="btn btn-primary" onclick="addToCart(${product.id})">زیادکردن بۆ سەبەتە</button>
-                    <button class="btn" onclick="addToWishlist(${product.id})" style="margin-right: 0.5rem; background: #f8f9fa; color: #dc3545;">❤️</button>
+                    <div>
+                        <button class="btn-cart" onclick="addToCart(${product.id})">زیادکردن بۆ سەبەتە</button>
+                        <button class="btn-wishlist" onclick="addToWishlist(${product.id})">❤️</button>
+                    </div>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        function goHome() {
-            setActiveNav(0);
-            displayProducts();
-        }
-
         function showCategories() {
-            setActiveNav(1);
+            setNavActive(1);
+            const categoryItems = categories.map(cat => `
+                <div class="category-item" onclick="filterByCategory('${cat.id}'); closeModal();">
+                    <div style="font-size: 3rem;">${cat.icon}</div>
+                    <div>${cat.name}</div>
+                </div>
+            `).join('');
+            
             const content = `
                 <div class="category-grid">
-                    <div class="category-item" onclick="filterCategory('all'); closeModal('categoriesModal');">
-                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏠</div>
+                    <div class="category-item" onclick="filterByCategory('all'); closeModal();">
+                        <div style="font-size: 3rem;">🏠</div>
                         <div>هەموو بەرهەمەکان</div>
                     </div>
-                    <div class="category-item" onclick="filterCategory('mobile'); closeModal('categoriesModal');">
-                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">📱</div>
-                        <div>مۆبایل</div>
-                    </div>
-                    <div class="category-item" onclick="filterCategory('home'); closeModal('categoriesModal');">
-                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">🍳</div>
-                        <div>خانە و آشپزخانە</div>
-                    </div>
-                    <div class="category-item" onclick="filterCategory('electronics'); closeModal('categoriesModal');">
-                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">💻</div>
-                        <div>ئەلیکترۆنیات</div>
-                    </div>
+                    ${categoryItems}
                 </div>
             `;
-            createModal('categoriesModal', 'دەستەبەندیەکان', content);
+            openModal('دەستەبەندیەکان', content);
         }
 
         function showCart() {
-            setActiveNav(2);
-            const content = cart.length === 0 ? 
-                '<div style="text-align: center; padding: 2rem;">سەبەتەکەت بەتاڵە</div>' :
-                cart.map(item => `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #eee;">
+            setNavActive(2);
+            let content;
+            if (shoppingCart.length === 0) {
+                content = '<div style="text-align: center; padding: 2rem;"><h3>سەبەتەکەت بەتاڵە</h3></div>';
+            } else {
+                const items = shoppingCart.map(item => `
+                    <div class="item-row">
                         <div>
                             <strong>${item.name}</strong><br>
                             <span style="color: #dc3545;">${item.price.toLocaleString()} دینار</span>
                         </div>
-                        <button onclick="removeFromCart(${item.id}); showCart();" style="background: #dc3545; color: white; border: none; padding: 0.5rem; border-radius: 5px;">سڕینەوە</button>
+                        <button class="remove-btn" onclick="removeFromCart(${item.id}); showCart();">سڕینەوە</button>
                     </div>
                 `).join('');
-            createModal('cartModal', 'سەبەتەی کڕین', content);
+                
+                const total = shoppingCart.reduce((sum, item) => sum + item.price, 0);
+                content = items + `
+                    <div class="cart-total">کۆی گشتی: ${total.toLocaleString()} دینار</div>
+                    <button class="checkout-btn" onclick="processCheckout()">تەواوکردنی کڕین</button>
+                `;
+            }
+            openModal('سەبەتەی کڕین', content);
         }
 
         function showWishlist() {
-            setActiveNav(3);
-            const content = wishlist.length === 0 ?
-                '<div style="text-align: center; padding: 2rem;">هیچ بەرهەمێک لە لیستی دڵخوازەکاندا نییە</div>' :
-                wishlist.map(item => `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #eee;">
+            setNavActive(3);
+            let content;
+            if (userWishlist.length === 0) {
+                content = '<div style="text-align: center; padding: 2rem;"><h3>لیستی دڵخوازەکانت بەتاڵە</h3></div>';
+            } else {
+                content = userWishlist.map(item => `
+                    <div class="item-row">
                         <div>
                             <strong>${item.name}</strong><br>
                             <span style="color: #dc3545;">${item.price.toLocaleString()} دینار</span>
                         </div>
-                        <button onclick="removeFromWishlist(${item.id}); showWishlist();" style="background: #dc3545; color: white; border: none; padding: 0.5rem; border-radius: 5px;">سڕینەوە</button>
+                        <div>
+                            <button class="btn-cart" onclick="addToCart(${item.id})" style="margin-left: 0.5rem;">زیادکردن</button>
+                            <button class="remove-btn" onclick="removeFromWishlist(${item.id}); showWishlist();">سڕینەوە</button>
+                        </div>
                     </div>
                 `).join('');
-            createModal('wishlistModal', 'لیستی دڵخوازەکان', content);
+            }
+            openModal('لیستی دڵخوازەکان', content);
         }
 
         function showProfile() {
-            setActiveNav(4);
-            if (currentUser) {
+            setNavActive(4);
+            if (loggedUser) {
                 const content = `
                     <div style="text-align: center;">
                         <div style="width: 80px; height: 80px; background: #dc3545; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2rem; color: white;">👤</div>
-                        <h3>${currentUser.name}</h3>
-                        <button onclick="logout(); closeModal('profileModal');" class="btn btn-primary" style="margin-top: 1rem;">چوونەدەرەوە</button>
+                        <h3>${loggedUser.name}</h3>
+                        <p style="color: #666; margin: 0.5rem 0;">ئیمەیل: ${loggedUser.email}</p>
+                        <p style="color: #666; margin-bottom: 2rem;">ژمارە: ${loggedUser.phone}</p>
+                        <button class="remove-btn" onclick="userLogout(); closeModal();" style="width: 100%;">چوونەدەرەوە</button>
                     </div>
                 `;
-                createModal('profileModal', 'پرۆفایل', content);
+                openModal('پرۆفایل', content);
             } else {
-                showLogin();
+                showLoginModal();
             }
         }
 
-        function showLogin() {
+        function showLoginModal() {
             const content = `
-                <input type="text" placeholder="ناو" id="loginName" style="width: 100%; padding: 0.8rem; margin: 0.5rem 0; border: 1px solid #ddd; border-radius: 5px;">
-                <button onclick="login()" class="btn btn-primary" style="width: 100%;">چوونەژوور</button>
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <h3>چوونەژوور</h3>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">شێوازی چوونەژوور:</label>
+                    <select class="input-field" id="loginMethod" onchange="updateLoginForm()">
+                        <option value="email">چوونەژوور بە ئیمەیل</option>
+                        <option value="phone">چوونەژوور بە ژمارە مۆبایل</option>
+                    </select>
+                </div>
+                <div id="loginFormContent">
+                    <input type="email" class="input-field" placeholder="ئیمەیل" id="loginIdentifier" required>
+                    <input type="password" class="input-field" placeholder="تێپەڕوشە" id="loginPassword" required>
+                </div>
+                <button class="checkout-btn" onclick="performLogin()">چوونەژوور</button>
+                <div class="register-link" onclick="showRegisterModal()">ئەکاونتت نییە؟ تۆمارکردن</div>
             `;
-            createModal('loginModal', 'چوونەژوور', content);
+            openModal('چوونەژوور', content);
         }
 
-        function login() {
-            const name = document.getElementById('loginName').value;
-            if (name) {
-                currentUser = { name };
-                closeModal('loginModal');
-                showNotification(`بەخێربێیتەوە ${name}!`);
+        function showRegisterModal() {
+            const content = `
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <h3>تۆمارکردنی ئەکاونتی نوێ</h3>
+                </div>
+                <input type="text" class="input-field" placeholder="ناوی تەواو" id="regName" required>
+                <input type="email" class="input-field" placeholder="ئیمەیل" id="regEmail" required>
+                <input type="tel" class="input-field" placeholder="ژمارە مۆبایل" id="regPhone" required>
+                <input type="password" class="input-field" placeholder="تێپەڕوشە" id="regPassword" required>
+                <input type="password" class="input-field" placeholder="دووبارەکردنەوەی تێپەڕوشە" id="regConfirm" required>
+                <button class="checkout-btn" onclick="performRegister()">تۆمارکردن</button>
+                <div class="register-link" onclick="showLoginModal()">ئەکاونتت هەیە؟ چوونەژوور</div>
+            `;
+            openModal('تۆمارکردن', content);
+        }
+
+        function updateLoginForm() {
+            const method = document.getElementById('loginMethod').value;
+            const formContent = document.getElementById('loginFormContent');
+            
+            if (method === 'email') {
+                formContent.innerHTML = `
+                    <input type="email" class="input-field" placeholder="ئیمەیل" id="loginIdentifier" required>
+                    <input type="password" class="input-field" placeholder="تێپەڕوشە" id="loginPassword" required>
+                `;
+            } else {
+                formContent.innerHTML = `
+                    <input type="tel" class="input-field" placeholder="ژمارە مۆبایل" id="loginIdentifier" required>
+                    <input type="password" class="input-field" placeholder="تێپەڕوشە" id="loginPassword" required>
+                `;
             }
         }
 
-        function logout() {
-            currentUser = null;
-            showNotification('بە سەرکەوتووی چوویتە دەرەوە');
+        function performLogin() {
+            const method = document.getElementById('loginMethod').value;
+            const identifier = document.getElementById('loginIdentifier').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            
+            if (!identifier || !password) {
+                showAlert('تکایە هەموو خانەکان پڕبکەرەوە');
+                return;
+            }
+
+            if (method === 'email' && !isValidEmail(identifier)) {
+                showAlert('ئیمەیلەکە درووست نییە');
+                return;
+            }
+
+            const user = registeredUsers.find(u => {
+                if (method === 'email') {
+                    return u.email === identifier && u.password === password;
+                } else {
+                    return u.phone === identifier && u.password === password;
+                }
+            });
+
+            if (user) {
+                loggedUser = { name: user.name, email: user.email, phone: user.phone };
+                closeModal();
+                showAlert(`بەخێربێیتەوە ${user.name}!`);
+                document.getElementById('loginBtn').textContent = user.name;
+            } else {
+                showAlert('ئیمەیل/ژمارە یان پاسوردەکە هەڵەیە');
+            }
+        }
+
+        function performRegister() {
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const confirm = document.getElementById('regConfirm').value.trim();
+            
+            if (!name || !email || !phone || !password || !confirm) {
+                showAlert('تکایە هەموو خانەکان پڕبکەرەوە');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                showAlert('ئیمەیلەکە درووست نییە');
+                return;
+            }
+
+            if (password !== confirm) {
+                showAlert('تێپەڕوشەکان یەکسان نین');
+                return;
+            }
+
+            if (password.length < 6) {
+                showAlert('تێپەڕوشە دەبێت لانیکەم ٦ پیت بێت');
+                return;
+            }
+
+            if (registeredUsers.find(u => u.email === email || u.phone === phone)) {
+                showAlert('ئەم ئیمەیل یان ژمارەیە پێشتر تۆمارکراوە');
+                return;
+            }
+
+            const newUser = { name, email, phone, password };
+            registeredUsers.push(newUser);
+            loggedUser = { name, email, phone };
+            
+            closeModal();
+            showAlert(`ئەکاونتەکەت دروستکرا، بەخێربێیت ${name}!`);
+            document.getElementById('loginBtn').textContent = name;
+        }
+
+        function showAdminLogin() {
+            const content = `
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h3 style="color: #dc3545;">🔒 چوونەژوورەوەی بەڕیوبەر</h3>
+                    <p style="color: #666; margin-top: 0.5rem;">تکایە پاسوردی بەڕیوبەر بنووسە</p>
+                </div>
+                <input type="password" class="input-field" placeholder="پاسوردی بەڕیوبەر" id="adminPassword" required>
+                <button class="btn-cart" onclick="verifyAdminLogin()" style="width: 100%; margin-top: 1rem;">چوونەژوور</button>
+            `;
+            openModal('چوونەژوورەوەی بەڕیوبەر', content);
+        }
+
+        function verifyAdminLogin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                closeModal();
+                showAdminPanel();
+                showAlert('بەخێربێیت بۆ پانێڵی بەڕیوبەر');
+            } else {
+                showAlert('پاسوردەکە هەڵەیە');
+            }
+        }
+
+        function showAdminPanel() {
+            const content = `
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h3 style="color: #dc3545;">پانێڵی بەڕیوبەر</h3>
+                </div>
+                <div style="display: grid; gap: 1rem;">
+                    <button class="btn-cart" onclick="showAllUsers()" style="width: 100%;">لیستی بەکارهێنەران</button>
+                    <button class="btn-cart" onclick="showSalesReport()" style="width: 100%;">ڕاپۆرتی فرۆشتن</button>
+                    <button class="btn-cart" onclick="showProductManager()" style="width: 100%;">بەڕیوبردنی بەرهەمەکان</button>
+                    <button class="btn-cart" onclick="showCategoryManager()" style="width: 100%;">بەڕیوبردنی دەستەبەندیەکان</button>
+                    <button class="btn-cart" onclick="showOrdersManager()" style="width: 100%;">بەڕیوبردنی داواکاریەکان</button>
+                    <button class="remove-btn" onclick="clearAllData()" style="width: 100%;">پاککردنەوەی هەموو داتاکان</button>
+                </div>
+            `;
+            openModal('پانێڵی بەڕیوبەر', content);
+        }
+
+        function showAllUsers() {
+            const content = `
+                <div style="text-align: center;">
+                    <h4>لیستی بەکارهێنەران</h4>
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin: 1rem 0;">
+                        ${loggedUser ? 
+                            `<p><strong>بەکارهێنەری ئێستا:</strong> ${loggedUser.name}</p>
+                             <p><strong>ئیمەیل:</strong> ${loggedUser.email}</p>
+                             <p><strong>ژمارە:</strong> ${loggedUser.phone}</p>` 
+                            : '<p>هیچ بەکارهێنەرێک چوونەژوور نەکردووە</p>'
+                        }
+                        <p><strong>کۆی تۆمارکراوان:</strong> ${registeredUsers.length} کەس</p>
+                    </div>
+                    <button class="btn-cart" onclick="showAdminPanel()" style="width: 100%;">گەڕانەوە</button>
+                </div>
+            `;
+            openModal('لیستی بەکارهێنەران', content);
+        }
+
+        function showSalesReport() {
+            const totalProducts = productsList.length;
+            const cartItems = shoppingCart.length;
+            const wishlistItems = userWishlist.length;
+            
+            const content = `
+                <div style="text-align: center;">
+                    <h4>ڕاپۆرتی فرۆشتن</h4>
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin: 1rem 0;">
+                        <p><strong>کۆی بەرهەمەکان:</strong> ${totalProducts}</p>
+                        <p><strong>بەرهەم لە سەبەتەدا:</strong> ${cartItems}</p>
+                        <p><strong>بەرهەم لە لیستی دڵخوازەکاندا:</strong> ${wishlistItems}</p>
+                        <p><strong>بەکارهێنەرانی تۆمارکراو:</strong> ${registeredUsers.length}</p>
+                        <p><strong>بەکارهێنەرانی ئەکتیڤ:</strong> ${loggedUser ? 1 : 0}</p>
+                    </div>
+                    <button class="btn-cart" onclick="showAdminPanel()" style="width: 100%;">گەڕانەوە</button>
+                </div>
+            `;
+            openModal('ڕاپۆرتی فرۆشتن', content);
+        }
+
+        function showProductManager() {
+            const content = `
+                <div>
+                    <h4 style="text-align: center; margin-bottom: 1rem;">بەڕیوبردنی بەرهەمەکان</h4>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        ${productsList.map(product => `
+                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="font-size: 1.5rem;">${product.icon}</span>
+                                    <div>
+                                        <strong>${product.name}</strong><br>
+                                        <span style="color: #dc3545;">${product.price.toLocaleString()} دینار</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button class="remove-btn" onclick="deleteProduct(${product.id}); showProductManager();" style="padding: 0.3rem 0.8rem;">سڕینەوە</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="btn-cart" onclick="showAddProduct()" style="width: 100%; margin-top: 1rem;">زیادکردنی بەرهەمی نوێ</button>
+                    <button class="btn-cart" onclick="showAdminPanel()" style="width: 100%; margin-top: 0.5rem;">گەڕانەوە</button>
+                </div>
+            `;
+            openModal('بەڕیوبردنی بەرهەمەکان', content);
+        }
+
+        function showAddProduct() {
+            const categoryOptions = categories.map(cat => 
+                `<option value="${cat.id}">${cat.name}</option>`
+            ).join('');
+            
+            const content = `
+                <div>
+                    <h4 style="text-align: center; margin-bottom: 1rem;">زیادکردنی بەرهەمی نوێ</h4>
+                    <input type="text" class="input-field" placeholder="ناوی بەرهەم" id="productName" required>
+                    <input type="number" class="input-field" placeholder="نرخ بە دینار" id="productPrice" required>
+                    <select class="input-field" id="productCategory">
+                        ${categoryOptions}
+                    </select>
+                    <input type="text" class="input-field" placeholder="ئایکۆن (ئیمۆجی)" id="productIcon" maxlength="2" value="📦">
+                    <button class="btn-cart" onclick="addNewProduct()" style="width: 100%; margin-top: 1rem;">زیادکردن</button>
+                    <button class="btn-cart" onclick="showProductManager()" style="width: 100%; margin-top: 0.5rem;">گەڕانەوە</button>
+                </div>
+            `;
+            openModal('زیادکردنی بەرهەم', content);
+        }
+
+        function addNewProduct() {
+            const name = document.getElementById('productName').value.trim();
+            const price = parseInt(document.getElementById('productPrice').value);
+            const category = document.getElementById('productCategory').value;
+            const icon = document.getElementById('productIcon').value || '📦';
+            
+            if (!name || !price) {
+                showAlert('تکایە ناو و نرخ پڕبکەرەوە');
+                return;
+            }
+            
+            const newId = Math.max(...productsList.map(p => p.id)) + 1;
+            const newProduct = { id: newId, name, price, category, icon };
+            
+            productsList.push(newProduct);
+            currentProducts = [...productsList];
+            renderProducts();
+            showAlert('بەرهەمی نوێ زیادکرا');
+            showProductManager();
+        }
+
+        function deleteProduct(productId) {
+            const index = productsList.findIndex(p => p.id === productId);
+            if (index !== -1) {
+                productsList.splice(index, 1);
+                currentProducts = [...productsList];
+                
+                shoppingCart = shoppingCart.filter(c => c.id !== productId);
+                userWishlist = userWishlist.filter(w => w.id !== productId);
+                updateCartCounter();
+                
+                renderProducts();
+                showAlert('بەرهەم سڕایەوە');
+            }
+        }
+
+        function showCategoryManager() {
+            const content = `
+                <div>
+                    <h4 style="text-align: center; margin-bottom: 1rem;">بەڕیوبردنی دەستەبەندیەکان</h4>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        ${categories.map(category => `
+                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <span style="font-size: 2rem;">${category.icon}</span>
+                                    <div>
+                                        <strong>${category.name}</strong><br>
+                                        <span style="color: #666; font-size: 0.9rem;">ID: ${category.id}</span>
+                                    </div>
+                                </div>
+                                <button class="remove-btn" onclick="deleteCategory('${category.id}'); showCategoryManager();" style="padding: 0.3rem 0.8rem;">سڕینەوە</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="btn-cart" onclick="showAddCategory()" style="width: 100%; margin-top: 1rem;">زیادکردنی دەستەبەندی نوێ</button>
+                    <button class="btn-cart" onclick="showAdminPanel()" style="width: 100%; margin-top: 0.5rem;">گەڕانەوە</button>
+                </div>
+            `;
+            openModal('بەڕیوبردنی دەستەبەندیەکان', content);
+        }
+
+        function showAddCategory() {
+            const content = `
+                <div>
+                    <h4 style="text-align: center; margin-bottom: 1rem;">زیادکردنی دەستەبەندی نوێ</h4>
+                    <input type="text" class="input-field" placeholder="ناوی دەستەبەندی (کوردی)" id="categoryName" required>
+                    <input type="text" class="input-field" placeholder="ID بە ئینگلیزی (نمونە: accessories)" id="categoryId" required>
+                    <input type="text" class="input-field" placeholder="ئایکۆن (ئیمۆجی)" id="categoryIcon" maxlength="2" required>
+                    <button class="btn-cart" onclick="addNewCategory()" style="width: 100%; margin-top: 1rem;">زیادکردن</button>
+                    <button class="btn-cart" onclick="showCategoryManager()" style="width: 100%; margin-top: 0.5rem;">گەڕانەوە</button>
+                </div>
+            `;
+            openModal('زیادکردنی دەستەبەندی', content);
+        }
+
+        function addNewCategory() {
+            const name = document.getElementById('categoryName').value.trim();
+            const id = document.getElementById('categoryId').value.trim().toLowerCase();
+            const icon = document.getElementById('categoryIcon').value.trim();
+            
+            if (!name || !id || !icon) {
+                showAlert('تکایە هەموو خانەکان پڕبکەرەوە');
+                return;
+            }
+            
+            if (categories.find(cat => cat.id === id)) {
+                showAlert('ئەم ID ـیە پێشتر بەکارهاتووە');
+                return;
+            }
+            
+            const newCategory = { id, name, icon };
+            categories.push(newCategory);
+            
+            showAlert(`دەستەبەندی "${name}" زیادکرا`);
+            showCategoryManager();
+        }
+
+        function deleteCategory(categoryId) {
+            const mainCategories = ['mobile', 'home', 'electronics'];
+            if (mainCategories.includes(categoryId)) {
+                showAlert('ناتوانیت دەستەبەندی سەرەکیەکان بسڕیتەوە');
+                return;
+            }
+            
+            const index = categories.findIndex(cat => cat.id === categoryId);
+            if (index !== -1) {
+                categories.splice(index, 1);
+                
+                productsList.forEach(product => {
+                    if (product.category === categoryId) {
+                        product.category = 'electronics';
+                    }
+                });
+                
+                currentProducts = [...productsList];
+                renderProducts();
+                showAlert('دەستەبەندی سڕایەوە');
+            }
+        }
+
+        function showOrdersManager() {
+            const content = `
+                <div style="text-align: center;">
+                    <h4>بەڕیوبردنی داواکاریەکان</h4>
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin: 1rem 0;">
+                        <p>هیچ داواکاریەکی کڕین نییە لە ئێستادا</p>
+                        <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">داواکاریەکان لێرە نیشاندەدرێن</p>
+                    </div>
+                    <button class="btn-cart" onclick="showAdminPanel()" style="width: 100%;">گەڕانەوە</button>
+                </div>
+            `;
+            openModal('بەڕیوبردنی داواکاریەکان', content);
+        }
+
+        function clearAllData() {
+            if (confirm('دڵنیایت لە سڕینەوەی هەموو داتاکان؟')) {
+                shoppingCart = [];
+                userWishlist = [];
+                loggedUser = null;
+                registeredUsers = [];
+                updateCartCounter();
+                document.getElementById('loginBtn').textContent = 'چوونەژوور';
+                closeModal();
+                showAlert('هەموو داتاکان پاککرانەوە');
+                loadHome();
+            }
         }
 
         function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            if (product && !cart.find(c => c.id === productId)) {
-                cart.push(product);
-                showNotification('بەرهەم زیادکرا بۆ سەبەتە');
+            const product = productsList.find(p => p.id === productId);
+            if (product && !shoppingCart.find(c => c.id === productId)) {
+                shoppingCart.push(product);
+                updateCartCounter();
+                showAlert(`${product.name} زیادکرا بۆ سەبەتە`);
+            } else if (shoppingCart.find(c => c.id === productId)) {
+                showAlert('ئەم بەرهەمە پێشتر زیادکراوە');
             }
         }
 
         function addToWishlist(productId) {
-            const product = products.find(p => p.id === productId);
-            if (product && !wishlist.find(w => w.id === productId)) {
-                wishlist.push(product);
-                showNotification('بەرهەم زیادکرا بۆ لیستی دڵخوازەکان');
+            const product = productsList.find(p => p.id === productId);
+            if (product && !userWishlist.find(w => w.id === productId)) {
+                userWishlist.push(product);
+                showAlert(`${product.name} زیادکرا بۆ لیستی دڵخوازەکان`);
+            } else if (userWishlist.find(w => w.id === productId)) {
+                showAlert('ئەم بەرهەمە پێشتر زیادکراوە');
             }
         }
 
         function removeFromCart(productId) {
-            cart = cart.filter(c => c.id !== productId);
+            shoppingCart = shoppingCart.filter(c => c.id !== productId);
+            updateCartCounter();
+            showAlert('بەرهەم سڕایەوە لە سەبەتە');
         }
 
         function removeFromWishlist(productId) {
-            wishlist = wishlist.filter(w => w.id !== productId);
+            userWishlist = userWishlist.filter(w => w.id !== productId);
+            showAlert('بەرهەم سڕایەوە لە لیستی دڵخوازەکان');
         }
 
-        function filterCategory(category) {
+        function filterByCategory(category) {
             if (category === 'all') {
-                displayProducts();
+                currentProducts = [...productsList];
             } else {
-                displayProducts(products.filter(p => p.category === category));
+                currentProducts = productsList.filter(p => p.category === category);
             }
-            showNotification(`دەستەبەندی ${category} نیشاندرا`);
+            renderProducts();
         }
 
-        function setActiveNav(index) {
+        function processCheckout() {
+            if (shoppingCart.length === 0) {
+                showAlert('سەبەتەکەت بەتاڵە');
+                return;
+            }
+
+            if (!loggedUser) {
+                showAlert('تکایە سەرەتا چوونەژوور بکە');
+                closeModal();
+                showLoginModal();
+                return;
+            }
+
+            const total = shoppingCart.reduce((sum, item) => sum + item.price, 0);
+            const content = `
+                <div>
+                    <h4 style="text-align: center; margin-bottom: 1.5rem; color: #dc3545;">تەواوکردنی کڕین</h4>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+                        <h5 style="color: #333; margin-bottom: 0.5rem;">زانیاریی کڕیار:</h5>
+                        <p><strong>ناو:</strong> ${loggedUser.name}</p>
+                        <p><strong>ئیمەیل:</strong> ${loggedUser.email}</p>
+                        <p><strong>ژمارە:</strong> ${loggedUser.phone}</p>
+                    </div>
+                    
+                    <div style="background: #fff; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 1rem;">
+                        <h5 style="background: #dc3545; color: white; padding: 0.8rem; margin: 0; border-radius: 10px 10px 0 0;">بەرهەمەکانی داواکراو:</h5>
+                        <div style="padding: 1rem;">
+                            ${shoppingCart.map((item, index) => `
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; ${index < shoppingCart.length - 1 ? 'border-bottom: 1px solid #eee;' : ''}">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="font-size: 1.5rem;">${item.icon}</span>
+                                        <div>
+                                            <div style="font-weight: bold;">${item.name}</div>
+                                            <div style="font-size: 0.9rem; color: #666;">دانە: ١</div>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: left; color: #dc3545; font-weight: bold;">
+                                        ${item.price.toLocaleString()} دینار
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div style="background: #dc3545; color: white; padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>کۆی بەرهەمەکان:</span>
+                            <span>${shoppingCart.length} دانە</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>کۆی نرخ:</span>
+                            <span>${total.toLocaleString()} دینار</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>کرێی گەیاندن:</span>
+                            <span>بەخۆڕایی</span>
+                        </div>
+                        <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.3); margin: 0.5rem 0;">
+                        <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
+                            <span>کۆی گشتی:</span>
+                            <span>${total.toLocaleString()} دینار</span>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #e9ecef; padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+                        <h5 style="color: #333; margin-bottom: 0.5rem;">زانیاریی گەیاندن:</h5>
+                        <input type="text" class="input-field" placeholder="ناونیشانی تەواو" id="deliveryAddress" required style="margin-bottom: 0.5rem;">
+                        <textarea class="input-field" placeholder="تێبینی بۆ گەیاندن" id="deliveryNotes" rows="2"></textarea>
+                    </div>
+                    
+                    <div style="display: grid; gap: 0.5rem;">
+                        <button class="checkout-btn" onclick="finalizeOrder('cash')" style="background: #28a745;">پارەدانی کاتی گەیاندن</button>
+                        <button class="checkout-btn" onclick="finalizeOrder('card')" style="background: #007bff;">پارەدانی ئۆنلاین</button>
+                    </div>
+                </div>
+            `;
+            openModal('تەواوکردنی کڕین', content);
+        }
+
+        function finalizeOrder(paymentMethod) {
+            const address = document.getElementById('deliveryAddress').value.trim();
+            const notes = document.getElementById('deliveryNotes').value.trim();
+            
+            if (!address) {
+                showAlert('تکایە ناونیشانی گەیاندن بنووسە');
+                return;
+            }
+            
+            const total = shoppingCart.reduce((sum, item) => sum + item.price, 0);
+            const paymentText = paymentMethod === 'cash' ? 'پارەدانی کاتی گەیاندن' : 'پارەدانی ئۆنلاین';
+            
+            shoppingCart = [];
+            updateCartCounter();
+            closeModal();
+            
+            showAlert(`داواکاری کڕینەکەت بە سەرکەوتووی نێردرا! شێوازی پارەدان: ${paymentText}, کۆی گشتی: ${total.toLocaleString()} دینار`);
+        }
+
+        function updateCartCounter() {
+            const counter = document.getElementById('cartCount');
+            if (shoppingCart.length > 0) {
+                counter.textContent = shoppingCart.length;
+                counter.style.display = 'inline';
+            } else {
+                counter.style.display = 'none';
+            }
+        }
+
+        function setNavActive(index) {
             document.querySelectorAll('.nav-item').forEach((item, i) => {
                 item.classList.toggle('active', i === index);
             });
         }
 
-        function createModal(id, title, content) {
-            closeModal(id);
+        function openModal(title, content) {
+            closeModal();
             const modal = document.createElement('div');
-            modal.id = id;
             modal.className = 'modal';
             modal.style.display = 'block';
             modal.innerHTML = `
                 <div class="modal-content">
-                    <span class="close" onclick="closeModal('${id}')">&times;</span>
-                    <h2>${title}</h2>
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h2 style="text-align: center; margin-bottom: 1rem;">${title}</h2>
                     <div>${content}</div>
                 </div>
             `;
             document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
         }
 
-        function closeModal(id) {
-            const modal = document.getElementById(id);
+        function closeModal() {
+            const modal = document.querySelector('.modal');
             if (modal) modal.remove();
         }
 
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 3000);
+        function showAlert(message) {
+            const existingAlert = document.querySelector('.notification');
+            if (existingAlert) existingAlert.remove();
+            
+            const alert = document.createElement('div');
+            alert.className = 'notification';
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 3000);
         }
 
-        // Initialize
-        displayProducts();
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function userLogout() {
+            loggedUser = null;
+            showAlert('بە سەرکەوتووی چوویتە دەرەوە');
+            document.getElementById('loginBtn').textContent = 'چوونەژوور';
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            if (searchTerm === '') {
+                currentProducts = [...productsList];
+            } else {
+                currentProducts = productsList.filter(product => 
+                    product.name.toLowerCase().includes(searchTerm)
+                );
+            }
+            renderProducts();
+        });
+
+        // Initialize when page loads
+        window.onload = function() {
+            renderProducts();
+            updateCartCounter();
+        };
     </script>
 </body>
 </html>
