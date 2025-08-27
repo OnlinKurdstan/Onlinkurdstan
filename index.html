@@ -399,6 +399,7 @@
         let adminClickCount = 0;
         let adminClickTimer = null;
         let registeredUsers = [];
+        let orderHistory = []; // Add orders tracking
         const ADMIN_PASSWORD = "admin123";
         
         let categories = [
@@ -454,6 +455,9 @@
                 const savedUsers = getCookie('kurdistan_users');
                 if (savedUsers) registeredUsers = savedUsers;
                 
+                const savedOrders = getCookie('kurdistan_orders');
+                if (savedOrders) orderHistory = savedOrders;
+                
                 const savedProducts = getCookie('kurdistan_products');
                 if (savedProducts) {
                     productsList.length = 0;
@@ -476,6 +480,7 @@
                 setCookie('kurdistan_wishlist', userWishlist);
                 setCookie('kurdistan_user', loggedUser);
                 setCookie('kurdistan_users', registeredUsers);
+                setCookie('kurdistan_orders', orderHistory);
                 setCookie('kurdistan_products', productsList);
                 setCookie('kurdistan_categories', categories);
             } catch (error) {
@@ -1007,13 +1012,37 @@
 
         function showOrdersManager() {
             const content = `
-                <div style="text-align: center;">
-                    <h4>بەڕیوبردنی داواکاریەکان</h4>
-                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin: 1rem 0;">
-                        <p>هیچ داواکاریەکی کڕین نییە لە ئێستادا</p>
-                        <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">داواکاریەکان لێرە نیشاندەدرێن</p>
-                    </div>
-                    <button class="btn-cart" onclick="showAdminPanel()" style="width: 100%;">گەڕانەوە</button>
+                <div>
+                    <h4 style="text-align: center; margin-bottom: 1rem;">بەڕیوبردنی داواکاریەکان</h4>
+                    ${orderHistory.length === 0 ? 
+                        '<div style="text-align: center; padding: 2rem; color: #666;"><p>هیچ داواکاریەکی کڕین نییە لە ئێستادا</p></div>' 
+                        : 
+                        `<div style="max-height: 400px; overflow-y: auto;">
+                            ${orderHistory.map(order => `
+                                <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border-left: 4px solid #dc3545;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <strong>داواکاری #${order.id}</strong>
+                                        <span style="background: #28a745; color: white; padding: 0.2rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">${order.status}</span>
+                                    </div>
+                                    <p><strong>کڕیار:</strong> ${order.customerName}</p>
+                                    <p><strong>ئیمەیل:</strong> ${order.customerEmail}</p>
+                                    <p><strong>ژمارە:</strong> ${order.customerPhone}</p>
+                                    <p><strong>ناونیشان:</strong> ${order.address}</p>
+                                    <p><strong>کۆی گشتی:</strong> ${order.total.toLocaleString()} دینار</p>
+                                    <p><strong>شێوازی پارەدان:</strong> ${order.paymentMethod}</p>
+                                    <p><strong>بەروار:</strong> ${order.orderDate}</p>
+                                    <div style="margin-top: 0.5rem;">
+                                        <strong>بەرهەمەکان:</strong>
+                                        <ul style="margin: 0.5rem 0; padding-right: 1rem;">
+                                            ${order.items.map(item => `<li>${item.name} - ${item.price.toLocaleString()} دینار</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                    ${order.notes ? `<p><strong>تێبینی:</strong> ${order.notes}</p>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>`
+                    }
+                    <button class="btn-cart" onclick="showAdminPanel()" style="width: 100%; margin-top: 1rem;">گەڕانەوە</button>
                 </div>
             `;
             openModal('بەڕیوبردنی داواکاریەکان', content);
@@ -1170,12 +1199,30 @@
             const total = shoppingCart.reduce((sum, item) => sum + item.price, 0);
             const paymentText = paymentMethod === 'cash' ? 'پارەدانی کاتی گەیاندن' : 'پارەدانی ئۆنلاین';
             
+            // Create order object
+            const order = {
+                id: Date.now(),
+                customerName: loggedUser.name,
+                customerEmail: loggedUser.email,
+                customerPhone: loggedUser.phone,
+                items: [...shoppingCart],
+                total: total,
+                address: address,
+                notes: notes,
+                paymentMethod: paymentText,
+                orderDate: new Date().toLocaleDateString('ku'),
+                status: 'نوێ'
+            };
+            
+            // Add to order history
+            orderHistory.push(order);
+            
             shoppingCart = [];
             updateCartCounter();
             saveDataToStorage();
             closeModal();
             
-            showAlert(`داواکاری کڕینەکەت بە سەرکەوتووی نێردرا! شێوازی پارەدان: ${paymentText}, کۆی گشتی: ${total.toLocaleString()} دینار`);
+            showAlert(`داواکاری کڕینەکەت بە سەرکەوتووی نێردرا! ژمارەی داواکاری: ${order.id}`);
         }
 
         function updateCartCounter() {
