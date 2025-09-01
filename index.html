@@ -326,6 +326,21 @@
             text-decoration: underline;
         }
         
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #dc3545;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         @media (max-width: 768px) {
             .logo { font-size: 1.5rem; }
             .banner h1 { font-size: 1.8rem; }
@@ -382,7 +397,37 @@
         </div>
     </nav>
 
-    <script>
+    <!-- Firebase Scripts -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAha3geF3HCf60_FIdj2Vtu_T5J6jCcGg8",
+            authDomain: "kurdistan-ecommerce.firebaseapp.com",
+            projectId: "kurdistan-ecommerce",
+            storageBucket: "kurdistan-ecommerce.firebasestorage.app",
+            messagingSenderId: "660288701141",
+            appId: "1:660288701141:web:e796002378e8f7656a985c"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Global variables
+        let shoppingCart = [];
+        let userWishlist = [];
+        let loggedUser = null;
+        let currentProducts = [];
+        let adminClickCount = 0;
+        let adminClickTimer = null;
+        let orderHistory = [];
+        const ADMIN_PASSWORD = "admin123";
+        
         const productsList = [
             { id: 1, name: "مۆبایلی سامسۆنگ Galaxy S24", price: 800000, category: "mobile", icon: "📱" },
             { id: 2, name: "ئایفۆن 15 پرۆ", price: 1200000, category: "mobile", icon: "📱" },
@@ -392,16 +437,6 @@
             { id: 6, name: "هێدفۆنی سۆنی", price: 120000, category: "electronics", icon: "🎧" }
         ];
 
-        let shoppingCart = [];
-        let userWishlist = [];
-        let loggedUser = null;
-        let currentProducts = [...productsList];
-        let adminClickCount = 0;
-        let adminClickTimer = null;
-        let registeredUsers = [];
-        let orderHistory = []; // Add orders tracking
-        const ADMIN_PASSWORD = "admin123";
-        
         let categories = [
             { id: 'mobile', name: 'مۆبایل', icon: '📱' },
             { id: 'home', name: 'خانە و آشپزخانە', icon: '🍳' },
@@ -409,85 +444,71 @@
             { id: 'accessories', name: 'ئیکسسواراتی سەیارە', icon: '🔌' }
         ];
 
-        // Cookie functions for data persistence
-        function setCookie(name, value, days = 30) {
-            const expires = new Date();
-            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-            document.cookie = `${name}=${encodeURIComponent(JSON.stringify(value))};expires=${expires.toUTCString()};path=/`;
+        // Firebase functions
+        async function saveUserCart(userId, cart) {
+            try {
+                await setDoc(doc(db, 'userCarts', userId), { cart: cart });
+            } catch (error) {
+                console.error('Error saving cart:', error);
+            }
         }
 
-        function getCookie(name) {
-            const nameEQ = name + "=";
-            const ca = document.cookie.split(';');
-            for(let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) === 0) {
-                    try {
-                        return JSON.parse(decodeURIComponent(c.substring(nameEQ.length, c.length)));
-                    } catch (e) {
-                        return null;
+        async function loadUserCart(userId) {
+            try {
+                const cartDoc = await getDocs(collection(db, 'userCarts'));
+                cartDoc.forEach((doc) => {
+                    if (doc.id === userId && doc.data().cart) {
+                        shoppingCart = doc.data().cart;
+                        updateCartCounter();
                     }
-                }
-            }
-            return null;
-        }
-
-        function deleteCookie(name) {
-            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-        }
-
-        // Load data from cookies on page load
-        function loadDataFromStorage() {
-            try {
-                const savedCart = getCookie('kurdistan_cart');
-                if (savedCart) shoppingCart = savedCart;
-                
-                const savedWishlist = getCookie('kurdistan_wishlist');
-                if (savedWishlist) userWishlist = savedWishlist;
-                
-                const savedUser = getCookie('kurdistan_user');
-                if (savedUser) {
-                    loggedUser = savedUser;
-                    document.getElementById('loginBtn').textContent = loggedUser.name;
-                }
-                
-                const savedUsers = getCookie('kurdistan_users');
-                if (savedUsers) registeredUsers = savedUsers;
-                
-                const savedOrders = getCookie('kurdistan_orders');
-                if (savedOrders) orderHistory = savedOrders;
-                
-                const savedProducts = getCookie('kurdistan_products');
-                if (savedProducts) {
-                    productsList.length = 0;
-                    productsList.push(...savedProducts);
-                    currentProducts = [...productsList];
-                }
-                
-                const savedCategories = getCookie('kurdistan_categories');
-                if (savedCategories) categories = savedCategories;
-                
+                });
             } catch (error) {
-                console.log('Error loading data from storage:', error);
+                console.error('Error loading cart:', error);
             }
         }
 
-        // Save data to cookies
-        function saveDataToStorage() {
+        async function saveOrder(orderData) {
             try {
-                setCookie('kurdistan_cart', shoppingCart);
-                setCookie('kurdistan_wishlist', userWishlist);
-                setCookie('kurdistan_user', loggedUser);
-                setCookie('kurdistan_users', registeredUsers);
-                setCookie('kurdistan_orders', orderHistory);
-                setCookie('kurdistan_products', productsList);
-                setCookie('kurdistan_categories', categories);
+                await addDoc(collection(db, 'orders'), orderData);
+                await loadOrders(); // Refresh orders
             } catch (error) {
-                console.log('Error saving data to storage:', error);
+                console.error('Error saving order:', error);
+                showAlert('خەطا لە پاشەکەوتکردنی داواکاری');
             }
         }
 
+        async function loadOrders() {
+            try {
+                const ordersSnapshot = await getDocs(collection(db, 'orders'));
+                orderHistory = [];
+                ordersSnapshot.forEach((doc) => {
+                    orderHistory.push({ id: doc.id, ...doc.data() });
+                });
+            } catch (error) {
+                console.error('Error loading orders:', error);
+            }
+        }
+
+        // Auth state observer
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loggedUser = {
+                    uid: user.uid,
+                    email: user.email,
+                    name: user.displayName || user.email.split('@')[0]
+                };
+                document.getElementById('loginBtn').textContent = loggedUser.name;
+                loadUserCart(user.uid);
+            } else {
+                loggedUser = null;
+                document.getElementById('loginBtn').textContent = 'چوونەژوور';
+                shoppingCart = [];
+                userWishlist = [];
+                updateCartCounter();
+            }
+        });
+
+        // Main functions
         function handleLogoClick() {
             adminClickCount++;
             
@@ -617,7 +638,6 @@
                         <div style="width: 80px; height: 80px; background: #dc3545; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2rem; color: white;">👤</div>
                         <h3>${loggedUser.name}</h3>
                         <p style="color: #666; margin: 0.5rem 0;">ئیمەیل: ${loggedUser.email}</p>
-                        <p style="color: #666; margin-bottom: 2rem;">ژمارە: ${loggedUser.phone}</p>
                         <button class="remove-btn" onclick="userLogout(); closeModal();" style="width: 100%;">چوونەدەرەوە</button>
                     </div>
                 `;
@@ -632,17 +652,8 @@
                 <div style="text-align: center; margin-bottom: 1.5rem;">
                     <h3>چوونەژوور</h3>
                 </div>
-                <div style="margin-bottom: 1rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">شێوازی چوونەژوور:</label>
-                    <select class="input-field" id="loginMethod" onchange="updateLoginForm()">
-                        <option value="email">چوونەژوور بە ئیمەیل</option>
-                        <option value="phone">چوونەژوور بە ژمارە مۆبایل</option>
-                    </select>
-                </div>
-                <div id="loginFormContent">
-                    <input type="email" class="input-field" placeholder="ئیمەیل" id="loginIdentifier" required>
-                    <input type="password" class="input-field" placeholder="تێپەڕوشە" id="loginPassword" required>
-                </div>
+                <input type="email" class="input-field" placeholder="ئیمەیل" id="loginEmail" required>
+                <input type="password" class="input-field" placeholder="تێپەڕوشە" id="loginPassword" required>
                 <button class="checkout-btn" onclick="performLogin()">چوونەژوور</button>
                 <div class="register-link" onclick="showRegisterModal()">ئەکاونتت نییە؟ تۆمارکردن</div>
             `;
@@ -656,7 +667,6 @@
                 </div>
                 <input type="text" class="input-field" placeholder="ناوی تەواو" id="regName" required>
                 <input type="email" class="input-field" placeholder="ئیمەیل" id="regEmail" required>
-                <input type="tel" class="input-field" placeholder="ژمارە مۆبایل" id="regPhone" required>
                 <input type="password" class="input-field" placeholder="تێپەڕوشە" id="regPassword" required>
                 <input type="password" class="input-field" placeholder="دووبارەکردنەوەی تێپەڕوشە" id="regConfirm" required>
                 <button class="checkout-btn" onclick="performRegister()">تۆمارکردن</button>
@@ -665,71 +675,32 @@
             openModal('تۆمارکردن', content);
         }
 
-        function updateLoginForm() {
-            const method = document.getElementById('loginMethod').value;
-            const formContent = document.getElementById('loginFormContent');
-            
-            if (method === 'email') {
-                formContent.innerHTML = `
-                    <input type="email" class="input-field" placeholder="ئیمەیل" id="loginIdentifier" required>
-                    <input type="password" class="input-field" placeholder="تێپەڕوشە" id="loginPassword" required>
-                `;
-            } else {
-                formContent.innerHTML = `
-                    <input type="tel" class="input-field" placeholder="ژمارە مۆبایل" id="loginIdentifier" required>
-                    <input type="password" class="input-field" placeholder="تێپەڕوشە" id="loginPassword" required>
-                `;
-            }
-        }
-
-        function performLogin() {
-            const method = document.getElementById('loginMethod').value;
-            const identifier = document.getElementById('loginIdentifier').value.trim();
+        async function performLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
             
-            if (!identifier || !password) {
+            if (!email || !password) {
                 showAlert('تکایە هەموو خانەکان پڕبکەرەوە');
                 return;
             }
 
-            if (method === 'email' && !isValidEmail(identifier)) {
-                showAlert('ئیمەیلەکە درووست نییە');
-                return;
-            }
-
-            const user = registeredUsers.find(u => {
-                if (method === 'email') {
-                    return u.email === identifier && u.password === password;
-                } else {
-                    return u.phone === identifier && u.password === password;
-                }
-            });
-
-            if (user) {
-                loggedUser = { name: user.name, email: user.email, phone: user.phone };
-                saveDataToStorage();
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
                 closeModal();
-                showAlert(`بەخێربێیتەوە ${user.name}!`);
-                document.getElementById('loginBtn').textContent = user.name;
-            } else {
-                showAlert('ئیمەیل/ژمارە یان پاسوردەکە هەڵەیە');
+                showAlert('بە سەرکەوتووی چوویتەژوورەوە');
+            } catch (error) {
+                showAlert('ئیمەیل یان پاسوردەکە هەڵەیە');
             }
         }
 
-        function performRegister() {
+        async function performRegister() {
             const name = document.getElementById('regName').value.trim();
             const email = document.getElementById('regEmail').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
             const password = document.getElementById('regPassword').value.trim();
             const confirm = document.getElementById('regConfirm').value.trim();
             
-            if (!name || !email || !phone || !password || !confirm) {
+            if (!name || !email || !password || !confirm) {
                 showAlert('تکایە هەموو خانەکان پڕبکەرەوە');
-                return;
-            }
-
-            if (!isValidEmail(email)) {
-                showAlert('ئیمەیلەکە درووست نییە');
                 return;
             }
 
@@ -743,19 +714,22 @@
                 return;
             }
 
-            if (registeredUsers.find(u => u.email === email || u.phone === phone)) {
-                showAlert('ئەم ئیمەیل یان ژمارەیە پێشتر تۆمارکراوە');
-                return;
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+                closeModal();
+                showAlert(`ئەکاونتەکەت دروستکرا، بەخێربێیت!`);
+            } catch (error) {
+                showAlert('خەطا لە دروستکردنی ئەکاونت: ' + error.message);
             }
+        }
 
-            const newUser = { name, email, phone, password };
-            registeredUsers.push(newUser);
-            loggedUser = { name, email, phone };
-            
-            saveDataToStorage();
-            closeModal();
-            showAlert(`ئەکاونتەکەت دروستکرا، بەخێربێیت ${name}!`);
-            document.getElementById('loginBtn').textContent = name;
+        async function userLogout() {
+            try {
+                await signOut(auth);
+                showAlert('بە سەرکەوتووی چوویتە دەرەوە');
+            } catch (error) {
+                showAlert('خەطا لە چوونەدەرەوە');
+            }
         }
 
         function showAdminLogin() {
@@ -770,9 +744,10 @@
             openModal('چوونەژوورەوەی بەڕیوبەر', content);
         }
 
-        function verifyAdminLogin() {
+        async function verifyAdminLogin() {
             const password = document.getElementById('adminPassword').value;
             if (password === ADMIN_PASSWORD) {
+                await loadOrders(); // Load orders first
                 closeModal();
                 showAdminPanel();
                 showAlert('بەخێربێیت بۆ پانێڵی بەڕیوبەر');
@@ -787,227 +762,14 @@
                     <h3 style="color: #dc3545;">پانێڵی بەڕیوبەر</h3>
                 </div>
                 <div style="display: grid; gap: 1rem;">
-                    <button class="btn-cart" onclick="showAllUsers()" style="width: 100%;">لیستی بەکارهێنەران</button>
+                    <button class="btn-cart" onclick="showOrdersManager()" style="width: 100%;">بەڕیوبردنی داواکاریەکان</button>
                     <button class="btn-cart" onclick="showSalesReport()" style="width: 100%;">ڕاپۆرتی فرۆشتن</button>
                     <button class="btn-cart" onclick="showProductManager()" style="width: 100%;">بەڕیوبردنی بەرهەمەکان</button>
                     <button class="btn-cart" onclick="showCategoryManager()" style="width: 100%;">بەڕیوبردنی دەستەبەندیەکان</button>
-                    <button class="btn-cart" onclick="showOrdersManager()" style="width: 100%;">بەڕیوبردنی داواکاریەکان</button>
                     <button class="remove-btn" onclick="clearAllData()" style="width: 100%;">پاککردنەوەی هەموو داتاکان</button>
                 </div>
             `;
             openModal('پانێڵی بەڕیوبەر', content);
-        }
-
-        function showAllUsers() {
-            const content = `
-                <div style="text-align: center;">
-                    <h4>لیستی بەکارهێنەران</h4>
-                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin: 1rem 0;">
-                        ${loggedUser ? 
-                            `<p><strong>بەکارهێنەری ئێستا:</strong> ${loggedUser.name}</p>
-                             <p><strong>ئیمەیل:</strong> ${loggedUser.email}</p>
-                             <p><strong>ژمارە:</strong> ${loggedUser.phone}</p>` 
-                            : '<p>هیچ بەکارهێنەرێک چوونەژوور نەکردووە</p>'
-                        }
-                        <p><strong>کۆی تۆمارکراوان:</strong> ${registeredUsers.length} کەس</p>
-                    </div>
-                    <button class="btn-cart" onclick="showAdminPanel()" style="width: 100%;">گەڕانەوە</button>
-                </div>
-            `;
-            openModal('لیستی بەکارهێنەران', content);
-        }
-
-        function showSalesReport() {
-            const totalProducts = productsList.length;
-            const cartItems = shoppingCart.length;
-            const wishlistItems = userWishlist.length;
-            
-            const content = `
-                <div style="text-align: center;">
-                    <h4>ڕاپۆرتی فرۆشتن</h4>
-                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin: 1rem 0;">
-                        <p><strong>کۆی بەرهەمەکان:</strong> ${totalProducts}</p>
-                        <p><strong>بەرهەم لە سەبەتەدا:</strong> ${cartItems}</p>
-                        <p><strong>بەرهەم لە لیستی دڵخوازەکاندا:</strong> ${wishlistItems}</p>
-                        <p><strong>بەکارهێنەرانی تۆمارکراو:</strong> ${registeredUsers.length}</p>
-                        <p><strong>بەکارهێنەرانی ئەکتیڤ:</strong> ${loggedUser ? 1 : 0}</p>
-                    </div>
-                    <button class="btn-cart" onclick="showAdminPanel()" style="width: 100%;">گەڕانەوە</button>
-                </div>
-            `;
-            openModal('ڕاپۆرتی فرۆشتن', content);
-        }
-
-        function showProductManager() {
-            const content = `
-                <div>
-                    <h4 style="text-align: center; margin-bottom: 1rem;">بەڕیوبردنی بەرهەمەکان</h4>
-                    <div style="max-height: 300px; overflow-y: auto;">
-                        ${productsList.map(product => `
-                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
-                                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <span style="font-size: 1.5rem;">${product.icon}</span>
-                                    <div>
-                                        <strong>${product.name}</strong><br>
-                                        <span style="color: #dc3545;">${product.price.toLocaleString()} دینار</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <button class="remove-btn" onclick="deleteProduct(${product.id}); showProductManager();" style="padding: 0.3rem 0.8rem;">سڕینەوە</button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <button class="btn-cart" onclick="showAddProduct()" style="width: 100%; margin-top: 1rem;">زیادکردنی بەرهەمی نوێ</button>
-                    <button class="btn-cart" onclick="showAdminPanel()" style="width: 100%; margin-top: 0.5rem;">گەڕانەوە</button>
-                </div>
-            `;
-            openModal('بەڕیوبردنی بەرهەمەکان', content);
-        }
-
-        function showAddProduct() {
-            const categoryOptions = categories.map(cat => 
-                `<option value="${cat.id}">${cat.name}</option>`
-            ).join('');
-            
-            const content = `
-                <div>
-                    <h4 style="text-align: center; margin-bottom: 1rem;">زیادکردنی بەرهەمی نوێ</h4>
-                    <input type="text" class="input-field" placeholder="ناوی بەرهەم" id="productName" required>
-                    <input type="number" class="input-field" placeholder="نرخ بە دینار" id="productPrice" required>
-                    <select class="input-field" id="productCategory">
-                        ${categoryOptions}
-                    </select>
-                    <input type="text" class="input-field" placeholder="ئایکۆن (ئیمۆجی)" id="productIcon" maxlength="2" value="📦">
-                    <button class="btn-cart" onclick="addNewProduct()" style="width: 100%; margin-top: 1rem;">زیادکردن</button>
-                    <button class="btn-cart" onclick="showProductManager()" style="width: 100%; margin-top: 0.5rem;">گەڕانەوە</button>
-                </div>
-            `;
-            openModal('زیادکردنی بەرهەم', content);
-        }
-
-        function addNewProduct() {
-            const name = document.getElementById('productName').value.trim();
-            const price = parseInt(document.getElementById('productPrice').value);
-            const category = document.getElementById('productCategory').value;
-            const icon = document.getElementById('productIcon').value || '📦';
-            
-            if (!name || !price) {
-                showAlert('تکایە ناو و نرخ پڕبکەرەوە');
-                return;
-            }
-            
-            const newId = Math.max(...productsList.map(p => p.id)) + 1;
-            const newProduct = { id: newId, name, price, category, icon };
-            
-            productsList.push(newProduct);
-            currentProducts = [...productsList];
-            saveDataToStorage();
-            renderProducts();
-            showAlert('بەرهەمی نوێ زیادکرا');
-            showProductManager();
-        }
-
-        function deleteProduct(productId) {
-            const index = productsList.findIndex(p => p.id === productId);
-            if (index !== -1) {
-                productsList.splice(index, 1);
-                currentProducts = [...productsList];
-                
-                shoppingCart = shoppingCart.filter(c => c.id !== productId);
-                userWishlist = userWishlist.filter(w => w.id !== productId);
-                updateCartCounter();
-                
-                saveDataToStorage();
-                renderProducts();
-                showAlert('بەرهەم سڕایەوە');
-            }
-        }
-
-        function showCategoryManager() {
-            const content = `
-                <div>
-                    <h4 style="text-align: center; margin-bottom: 1rem;">بەڕیوبردنی دەستەبەندیەکان</h4>
-                    <div style="max-height: 300px; overflow-y: auto;">
-                        ${categories.map(category => `
-                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
-                                <div style="display: flex; align-items: center; gap: 1rem;">
-                                    <span style="font-size: 2rem;">${category.icon}</span>
-                                    <div>
-                                        <strong>${category.name}</strong><br>
-                                        <span style="color: #666; font-size: 0.9rem;">ID: ${category.id}</span>
-                                    </div>
-                                </div>
-                                <button class="remove-btn" onclick="deleteCategory('${category.id}'); showCategoryManager();" style="padding: 0.3rem 0.8rem;">سڕینەوە</button>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <button class="btn-cart" onclick="showAddCategory()" style="width: 100%; margin-top: 1rem;">زیادکردنی دەستەبەندی نوێ</button>
-                    <button class="btn-cart" onclick="showAdminPanel()" style="width: 100%; margin-top: 0.5rem;">گەڕانەوە</button>
-                </div>
-            `;
-            openModal('بەڕیوبردنی دەستەبەندیەکان', content);
-        }
-
-        function showAddCategory() {
-            const content = `
-                <div>
-                    <h4 style="text-align: center; margin-bottom: 1rem;">زیادکردنی دەستەبەندی نوێ</h4>
-                    <input type="text" class="input-field" placeholder="ناوی دەستەبەندی (کوردی)" id="categoryName" required>
-                    <input type="text" class="input-field" placeholder="ID بە ئینگلیزی (نمونە: accessories)" id="categoryId" required>
-                    <input type="text" class="input-field" placeholder="ئایکۆن (ئیمۆجی)" id="categoryIcon" maxlength="2" required>
-                    <button class="btn-cart" onclick="addNewCategory()" style="width: 100%; margin-top: 1rem;">زیادکردن</button>
-                    <button class="btn-cart" onclick="showCategoryManager()" style="width: 100%; margin-top: 0.5rem;">گەڕانەوە</button>
-                </div>
-            `;
-            openModal('زیادکردنی دەستەبەندی', content);
-        }
-
-        function addNewCategory() {
-            const name = document.getElementById('categoryName').value.trim();
-            const id = document.getElementById('categoryId').value.trim().toLowerCase();
-            const icon = document.getElementById('categoryIcon').value.trim();
-            
-            if (!name || !id || !icon) {
-                showAlert('تکایە هەموو خانەکان پڕبکەرەوە');
-                return;
-            }
-            
-            if (categories.find(cat => cat.id === id)) {
-                showAlert('ئەم ID ـیە پێشتر بەکارهاتووە');
-                return;
-            }
-            
-            const newCategory = { id, name, icon };
-            categories.push(newCategory);
-            
-            saveDataToStorage();
-            showAlert(`دەستەبەندی "${name}" زیادکرا`);
-            showCategoryManager();
-        }
-
-        function deleteCategory(categoryId) {
-            const mainCategories = ['mobile', 'home', 'electronics'];
-            if (mainCategories.includes(categoryId)) {
-                showAlert('ناتوانیت دەستەبەندی سەرەکیەکان بسڕیتەوە');
-                return;
-            }
-            
-            const index = categories.findIndex(cat => cat.id === categoryId);
-            if (index !== -1) {
-                categories.splice(index, 1);
-                
-                productsList.forEach(product => {
-                    if (product.category === categoryId) {
-                        product.category = 'electronics';
-                    }
-                });
-                
-                currentProducts = [...productsList];
-                saveDataToStorage();
-                renderProducts();
-                showAlert('دەستەبەندی سڕایەوە');
-            }
         }
 
         function showOrdersManager() {
@@ -1021,16 +783,15 @@
                             ${orderHistory.map(order => `
                                 <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border-left: 4px solid #dc3545;">
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                        <strong>داواکاری #${order.id}</strong>
+                                        <strong>داواکاری #${order.orderId}</strong>
                                         <span style="background: #28a745; color: white; padding: 0.2rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">${order.status}</span>
                                     </div>
                                     <p><strong>کڕیار:</strong> ${order.customerName}</p>
                                     <p><strong>ئیمەیل:</strong> ${order.customerEmail}</p>
-                                    <p><strong>ژمارە:</strong> ${order.customerPhone}</p>
                                     <p><strong>ناونیشان:</strong> ${order.address}</p>
                                     <p><strong>کۆی گشتی:</strong> ${order.total.toLocaleString()} دینار</p>
                                     <p><strong>شێوازی پارەدان:</strong> ${order.paymentMethod}</p>
-                                    <p><strong>بەروار:</strong> ${order.orderDate}</p>
+                                    <p><strong>بەروار:</strong> ${new Date(order.timestamp.seconds * 1000).toLocaleDateString('ku')}</p>
                                     <div style="margin-top: 0.5rem;">
                                         <strong>بەرهەمەکان:</strong>
                                         <ul style="margin: 0.5rem 0; padding-right: 1rem;">
@@ -1048,26 +809,40 @@
             openModal('بەڕیوبردنی داواکاریەکان', content);
         }
 
-        function clearAllData() {
-            if (confirm('دڵنیایت لە سڕینەوەی هەموو داتاکان؟')) {
-                shoppingCart = [];
-                userWishlist = [];
-                loggedUser = null;
-                registeredUsers = [];
-                updateCartCounter();
-                document.getElementById('loginBtn').textContent = 'چوونەژوور';
-                closeModal();
-                showAlert('هەموو داتاکان پاککرانەوە');
-                loadHome();
-            }
+        function showSalesReport() {
+            const totalProducts = productsList.length;
+            const cartItems = shoppingCart.length;
+            const wishlistItems = userWishlist.length;
+            const totalOrders = orderHistory.length;
+            const totalRevenue = orderHistory.reduce((sum, order) => sum + order.total, 0);
+            
+            const content = `
+                <div style="text-align: center;">
+                    <h4>ڕاپۆرتی فرۆشتن</h4>
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin: 1rem 0;">
+                        <p><strong>کۆی بەرهەمەکان:</strong> ${totalProducts}</p>
+                        <p><strong>کۆی داواکاریەکان:</strong> ${totalOrders}</p>
+                        <p><strong>کۆی داهاتەکان:</strong> ${totalRevenue.toLocaleString()} دینار</p>
+                        <p><strong>بەکارهێنەری ئەکتیڤ:</strong> ${loggedUser ? 1 : 0}</p>
+                        <p><strong>بەرهەم لە سەبەتەدا:</strong> ${cartItems}</p>
+                        <p><strong>بەرهەم لە لیستی دڵخوازەکاندا:</strong> ${wishlistItems}</p>
+                    </div>
+                    <button class="btn-cart" onclick="showAdminPanel()" style="width: 100%;">گەڕانەوە</button>
+                </div>
+            `;
+            openModal('ڕاپۆرتی فرۆشتن', content);
         }
 
-        function addToCart(productId) {
+        async function addToCart(productId) {
             const product = productsList.find(p => p.id === productId);
             if (product && !shoppingCart.find(c => c.id === productId)) {
                 shoppingCart.push(product);
                 updateCartCounter();
-                saveDataToStorage();
+                
+                if (loggedUser) {
+                    await saveUserCart(loggedUser.uid, shoppingCart);
+                }
+                
                 showAlert(`${product.name} زیادکرا بۆ سەبەتە`);
             } else if (shoppingCart.find(c => c.id === productId)) {
                 showAlert('ئەم بەرهەمە پێشتر زیادکراوە');
@@ -1078,23 +853,25 @@
             const product = productsList.find(p => p.id === productId);
             if (product && !userWishlist.find(w => w.id === productId)) {
                 userWishlist.push(product);
-                saveDataToStorage();
                 showAlert(`${product.name} زیادکرا بۆ لیستی دڵخوازەکان`);
             } else if (userWishlist.find(w => w.id === productId)) {
                 showAlert('ئەم بەرهەمە پێشتر زیادکراوە');
             }
         }
 
-        function removeFromCart(productId) {
+        async function removeFromCart(productId) {
             shoppingCart = shoppingCart.filter(c => c.id !== productId);
             updateCartCounter();
-            saveDataToStorage();
+            
+            if (loggedUser) {
+                await saveUserCart(loggedUser.uid, shoppingCart);
+            }
+            
             showAlert('بەرهەم سڕایەوە لە سەبەتە');
         }
 
         function removeFromWishlist(productId) {
             userWishlist = userWishlist.filter(w => w.id !== productId);
-            saveDataToStorage();
             showAlert('بەرهەم سڕایەوە لە لیستی دڵخوازەکان');
         }
 
@@ -1129,7 +906,6 @@
                         <h5 style="color: #333; margin-bottom: 0.5rem;">زانیاریی کڕیار:</h5>
                         <p><strong>ناو:</strong> ${loggedUser.name}</p>
                         <p><strong>ئیمەیل:</strong> ${loggedUser.email}</p>
-                        <p><strong>ژمارە:</strong> ${loggedUser.phone}</p>
                     </div>
                     
                     <div style="background: #fff; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 1rem;">
@@ -1187,7 +963,7 @@
             openModal('تەواوکردنی کڕین', content);
         }
 
-        function finalizeOrder(paymentMethod) {
+        async function finalizeOrder(paymentMethod) {
             const address = document.getElementById('deliveryAddress').value.trim();
             const notes = document.getElementById('deliveryNotes').value.trim();
             
@@ -1199,30 +975,34 @@
             const total = shoppingCart.reduce((sum, item) => sum + item.price, 0);
             const paymentText = paymentMethod === 'cash' ? 'پارەدانی کاتی گەیاندن' : 'پارەدانی ئۆنلاین';
             
-            // Create order object
             const order = {
-                id: Date.now(),
+                orderId: Date.now(),
                 customerName: loggedUser.name,
                 customerEmail: loggedUser.email,
-                customerPhone: loggedUser.phone,
+                customerUid: loggedUser.uid,
                 items: [...shoppingCart],
                 total: total,
                 address: address,
                 notes: notes,
                 paymentMethod: paymentText,
-                orderDate: new Date().toLocaleDateString('ku'),
+                timestamp: new Date(),
                 status: 'نوێ'
             };
             
-            // Add to order history
-            orderHistory.push(order);
-            
-            shoppingCart = [];
-            updateCartCounter();
-            saveDataToStorage();
-            closeModal();
-            
-            showAlert(`داواکاری کڕینەکەت بە سەرکەوتووی نێردرا! ژمارەی داواکاری: ${order.id}`);
+            try {
+                await saveOrder(order);
+                shoppingCart = [];
+                updateCartCounter();
+                
+                if (loggedUser) {
+                    await saveUserCart(loggedUser.uid, shoppingCart);
+                }
+                
+                closeModal();
+                showAlert(`داواکاری کڕینەکەت بە سەرکەوتووی نێردرا! ژمارەی داواکاری: ${order.orderId}`);
+            } catch (error) {
+                showAlert('خەطا لە ناردنی داواکاری');
+            }
         }
 
         function updateCartCounter() {
@@ -1280,17 +1060,7 @@
                 if (alert.parentNode) {
                     alert.remove();
                 }
-            }, 3000);
-        }
-
-        function isValidEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
-
-        function userLogout() {
-            loggedUser = null;
-            showAlert('بە سەرکەوتووی چوویتە دەرەوە');
-            document.getElementById('loginBtn').textContent = 'چوونەژوور';
+            }, 4000);
         }
 
         // Search functionality
@@ -1306,11 +1076,35 @@
             renderProducts();
         });
 
-        // Initialize when page loads
-        window.onload = function() {
-            renderProducts();
-            updateCartCounter();
-        };
+        // Make functions global for onclick handlers
+        window.handleLogoClick = handleLogoClick;
+        window.loadHome = loadHome;
+        window.showCategories = showCategories;
+        window.showCart = showCart;
+        window.showWishlist = showWishlist;
+        window.showProfile = showProfile;
+        window.showLoginModal = showLoginModal;
+        window.showRegisterModal = showRegisterModal;
+        window.performLogin = performLogin;
+        window.performRegister = performRegister;
+        window.userLogout = userLogout;
+        window.addToCart = addToCart;
+        window.addToWishlist = addToWishlist;
+        window.removeFromCart = removeFromCart;
+        window.removeFromWishlist = removeFromWishlist;
+        window.filterByCategory = filterByCategory;
+        window.processCheckout = processCheckout;
+        window.finalizeOrder = finalizeOrder;
+        window.closeModal = closeModal;
+        window.verifyAdminLogin = verifyAdminLogin;
+        window.showAdminPanel = showAdminPanel;
+        window.showOrdersManager = showOrdersManager;
+        window.showSalesReport = showSalesReport;
+
+        // Initialize
+        currentProducts = [...productsList];
+        renderProducts();
+        updateCartCounter();
     </script>
 </body>
 </html>
